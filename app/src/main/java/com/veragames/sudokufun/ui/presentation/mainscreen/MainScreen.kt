@@ -1,0 +1,43 @@
+package com.veragames.sudokufun.ui.presentation.mainscreen
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.veragames.sudokufun.ui.presentation.components.AppTitleImg
+import com.veragames.sudokufun.ui.presentation.components.MainScreenButton
+import com.veragames.sudokufun.ui.theme.SudokuFunTheme
+
+@Composable
+fun MainScreen() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceAround,
+        modifier =
+            Modifier
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .fillMaxSize(),
+    ) {
+        AppTitleImg(modifier = Modifier.fillMaxWidth().height(80.dp))
+        MainScreenButton(
+            text = "Nuevo Juego",
+            onClick = { /*TODO*/ },
+        )
+    }
+}
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+private fun MainScreenPrev() {
+    SudokuFunTheme {
+        MainScreen()
+    }
+}
