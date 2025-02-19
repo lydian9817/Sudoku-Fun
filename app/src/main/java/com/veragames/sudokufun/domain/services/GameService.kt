@@ -2,10 +2,10 @@ package com.veragames.sudokufun.domain.services
 
 import com.veragames.sudokufun.data.BoardSupplier
 import com.veragames.sudokufun.data.model.Cell
+import com.veragames.sudokufun.data.model.SudokuValues
 import com.veragames.sudokufun.domain.model.BoardSize
 import com.veragames.sudokufun.domain.model.CellStatus
 import com.veragames.sudokufun.domain.usecases.GameUseCases
-import com.veragames.sudokufun.util.SudokuValues
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,16 +23,16 @@ class GameService
 
         override suspend fun loadBoard(size: BoardSize) {
             board.update { gameBoardSupplier.getBoard(size.size).first() }
-            selectCell(board.value.find { it.value == SudokuValues.EMPTY }!!)
+            selectCell(board.value.find { it.value == SudokuValues.EMPTY.value }!!)
         }
 
         override suspend fun getBoard(): StateFlow<List<Cell>> = board.asStateFlow()
 
-        override suspend fun setCellValue(char: Char) {
+        override suspend fun setCellValue(value: SudokuValues) {
             board.update { currentBoard ->
                 currentBoard.map { c ->
                     if (c.row == selectedCell.row && c.col == selectedCell.col) {
-                        c.copy(value = char)
+                        c.copy(value = value.value)
                     } else {
                         c
                     }
@@ -64,7 +64,7 @@ class GameService
                                 cell.status == CellStatus.SELECTED -> CellStatus.SELECTED
                                 selectedCell.conflicts(cell) -> CellStatus.CONFLICT
                                 selectedCell.implicates(cell) -> CellStatus.IMPLICATED
-                                selectedCell.value == cell.value && selectedCell.value != SudokuValues.EMPTY -> CellStatus.COMMON_NUMBER
+                                selectedCell.value == cell.value && selectedCell.value != SudokuValues.EMPTY.value -> CellStatus.COMMON_NUMBER
                                 else -> CellStatus.NORMAL
                             },
                     )

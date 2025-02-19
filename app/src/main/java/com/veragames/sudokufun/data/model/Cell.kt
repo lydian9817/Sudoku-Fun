@@ -1,7 +1,6 @@
 package com.veragames.sudokufun.data.model
 
 import com.veragames.sudokufun.domain.model.CellStatus
-import com.veragames.sudokufun.util.SudokuValues
 
 data class Cell(
     val value: Char,
@@ -17,7 +16,7 @@ data class Cell(
             col.compareTo(other.col)
         }
 
-    fun conflicts(c: Cell): Boolean = value == c.value && implicates(c) && (value != SudokuValues.EMPTY)
+    fun conflicts(c: Cell): Boolean = value == c.value && implicates(c) && (value != SudokuValues.EMPTY.value)
 
     fun implicates(c: Cell): Boolean = (row == c.row || col == c.col || box == c.box)
 
