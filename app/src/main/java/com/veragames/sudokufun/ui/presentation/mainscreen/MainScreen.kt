@@ -17,7 +17,7 @@ import com.veragames.sudokufun.ui.presentation.components.MainScreenButton
 import com.veragames.sudokufun.ui.theme.SudokuFunTheme
 
 @Composable
-fun MainScreen() {
+fun MainScreen(onNewGame: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround,
@@ -29,7 +29,7 @@ fun MainScreen() {
         AppTitleImg(modifier = Modifier.fillMaxWidth().height(80.dp))
         MainScreenButton(
             text = "Nuevo Juego",
-            onClick = { /*TODO*/ },
+            onClick = onNewGame,
         )
     }
 }
@@ -38,6 +38,6 @@ fun MainScreen() {
 @Composable
 private fun MainScreenPrev() {
     SudokuFunTheme {
-        MainScreen()
+        MainScreen({})
     }
 }

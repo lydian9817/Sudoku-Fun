@@ -1,4 +1,4 @@
-package com.veragames.sudokufun.ui.model
+package com.veragames.sudokufun.domain.model
 
 enum class BoardSize(
     val size: Int,
