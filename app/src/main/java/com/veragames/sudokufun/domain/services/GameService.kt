@@ -2,7 +2,7 @@ package com.veragames.sudokufun.domain.services
 
 import com.veragames.sudokufun.data.BoardSupplier
 import com.veragames.sudokufun.data.model.Cell
-import com.veragames.sudokufun.data.model.SudokuValues
+import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.model.BoardSize
 import com.veragames.sudokufun.domain.model.CellStatus
 import com.veragames.sudokufun.domain.usecases.GameUseCases
@@ -23,12 +23,12 @@ class GameService
 
         override suspend fun loadBoard(size: BoardSize) {
             board.update { gameBoardSupplier.getBoard(size.size).first() }
-            selectCell(board.value.find { it.value == SudokuValues.EMPTY.value }!!)
+            selectCell(board.value.find { it.value == SudokuValue.EMPTY.value }!!)
         }
 
         override suspend fun getBoard(): StateFlow<List<Cell>> = board.asStateFlow()
 
-        override suspend fun setCellValue(value: SudokuValues) {
+        override suspend fun setCellValue(value: SudokuValue) {
             board.update { currentBoard ->
                 currentBoard.map { c ->
                     if (c.row == selectedCell.row && c.col == selectedCell.col) {
@@ -64,7 +64,7 @@ class GameService
                                 cell.status == CellStatus.SELECTED -> CellStatus.SELECTED
                                 selectedCell.conflicts(cell) -> CellStatus.CONFLICT
                                 selectedCell.implicates(cell) -> CellStatus.IMPLICATED
-                                selectedCell.value == cell.value && selectedCell.value != SudokuValues.EMPTY.value -> CellStatus.COMMON_NUMBER
+                                selectedCell.value == cell.value && selectedCell.value != SudokuValue.EMPTY.value -> CellStatus.COMMON_NUMBER
                                 else -> CellStatus.NORMAL
                             },
                     )

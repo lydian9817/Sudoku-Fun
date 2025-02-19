@@ -16,7 +16,7 @@ data class Cell(
             col.compareTo(other.col)
         }
 
-    fun conflicts(c: Cell): Boolean = value == c.value && implicates(c) && (value != SudokuValues.EMPTY.value)
+    fun conflicts(c: Cell): Boolean = value == c.value && implicates(c) && (value != SudokuValue.EMPTY.value)
 
     fun implicates(c: Cell): Boolean = (row == c.row || col == c.col || box == c.box)
 

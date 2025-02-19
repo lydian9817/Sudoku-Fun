@@ -1,6 +1,6 @@
 package com.veragames.sudokufun.data.model
 
-enum class SudokuValues(
+enum class SudokuValue(
     val value: Char,
 ) {
     EMPTY(' '),
