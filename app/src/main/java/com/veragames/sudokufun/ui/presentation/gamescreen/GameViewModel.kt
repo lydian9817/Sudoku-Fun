@@ -3,6 +3,7 @@ package com.veragames.sudokufun.ui.presentation.gamescreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.veragames.sudokufun.data.model.Cell
+import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.model.BoardSize
 import com.veragames.sudokufun.domain.usecases.GameUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +37,14 @@ class GameViewModel
         }
 
         fun onCellClicked(cell: Cell) {
-            gameUseCases.selectCell(cell)
+            viewModelScope.launch {
+                gameUseCases.selectCell(cell)
+            }
+        }
+
+        fun setCellValue(value: SudokuValue) {
+            viewModelScope.launch {
+                gameUseCases.setCellValue(value)
+            }
         }
     }

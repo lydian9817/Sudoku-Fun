@@ -8,6 +8,7 @@ data class Cell(
     val col: Int,
     val box: Int,
     val status: CellStatus = CellStatus.NORMAL,
+    val completed: Boolean = false,
 ) : Comparable<Cell> {
     override fun compareTo(other: Cell): Int =
         if (row != other.row) {
@@ -24,11 +25,12 @@ data class Cell(
         other is Cell && row == other.row && col == other.col && value == other.value && status == other.status
 
     override fun hashCode(): Int {
-        var result = value.hashCode()
-        result = 31 * result + row
+        // var result = value.hashCode()
+        var result = row.hashCode()
         result = 31 * result + col
-        result = 31 * result + box
-        result = 31 * result + status.hashCode()
+        // result = 31 * result + status.hashCode()
+        // result = 31 * result + completed.hashCode()
+        // result = 31 * result + box
         return result
     }
 }

@@ -19,6 +19,7 @@ class GameService
         private val gameBoardSupplier: BoardSupplier,
     ) : GameUseCases {
         private val board: MutableStateFlow<List<Cell>> = MutableStateFlow(emptyList())
+        private val userConflicts: MutableSet<Cell> = mutableSetOf()
         private lateinit var selectedCell: Cell
 
         override suspend fun loadBoard(size: BoardSize) {
@@ -29,16 +30,19 @@ class GameService
         override suspend fun getBoard(): StateFlow<List<Cell>> = board.asStateFlow()
 
         override suspend fun setCellValue(value: SudokuValue) {
-            board.update { currentBoard ->
-                currentBoard.map { c ->
-                    if (c.row == selectedCell.row && c.col == selectedCell.col) {
-                        c.copy(value = value.value)
-                    } else {
-                        c
+            if (selectedCell.completed.not()) {
+                board.update { currentBoard ->
+                    currentBoard.map { c ->
+                        if (c.row == selectedCell.row && c.col == selectedCell.col) {
+                            selectedCell = selectedCell.copy(value = value.value)
+                            c.copy(value = value.value)
+                        } else {
+                            c
+                        }
                     }
                 }
+                updateStatus()
             }
-            updateStatus()
         }
 
         override fun selectCell(cell: Cell) {
@@ -62,9 +66,15 @@ class GameService
                         status =
                             when {
                                 cell.status == CellStatus.SELECTED -> CellStatus.SELECTED
-                                selectedCell.conflicts(cell) -> CellStatus.CONFLICT
+                                selectedCell.conflicts(cell) -> {
+                                    // userConflicts.add(selectedCell)
+                                    CellStatus.CONFLICT
+                                }
                                 selectedCell.implicates(cell) -> CellStatus.IMPLICATED
-                                selectedCell.value == cell.value && selectedCell.value != SudokuValue.EMPTY.value -> CellStatus.COMMON_NUMBER
+                                selectedCell.value == cell.value && selectedCell.value != SudokuValue.EMPTY.value -> {
+                                    CellStatus.COMMON_NUMBER
+                                }
+
                                 else -> CellStatus.NORMAL
                             },
                     )
