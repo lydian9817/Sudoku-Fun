@@ -37,7 +37,7 @@ fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
     ) {
         Board(
             cellList = state.board,
-            onCellClick = { viewModel.onCellClicked(it) },
+            onCellClick = { viewModel.selectCell(it) },
         )
         Spacer(modifier = Modifier.height(48.dp))
         LazyRow(

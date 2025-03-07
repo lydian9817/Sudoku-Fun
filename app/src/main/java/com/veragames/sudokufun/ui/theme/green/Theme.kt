@@ -2,6 +2,10 @@ package com.veragames.sudokufun.ui.theme.green
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.graphics.Color
+
+val userConflictCellText = Color(0xFFBA1A1A)
+val userCompletedCellText = Color(0xFFBA1A1A)
 
 val greenLightScheme =
     lightColorScheme(

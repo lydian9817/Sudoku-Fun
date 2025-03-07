@@ -10,7 +10,5 @@ interface GameUseCases {
 
     suspend fun getBoard(): StateFlow<List<Cell>>
 
-    suspend fun setCellValue(value: SudokuValue)
-
-    fun selectCell(cell: Cell)
+    suspend fun setCellValue(cell: Cell, value: SudokuValue)
 }
