@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -17,15 +18,18 @@ fun CommonText(
     modifier: Modifier = Modifier,
     color: Color = Color.Unspecified,
     style: TextStyle = LocalTextStyle.current,
+    textAlign: TextAlign = TextAlign.Center,
     maxLines: Int = 1,
+    fontWeight: FontWeight? = null,
 ) {
     Text(
         text = text,
         color = color,
         modifier = modifier,
         maxLines = maxLines,
-        textAlign = TextAlign.Center,
+        textAlign = textAlign,
         style = style,
+        fontWeight = fontWeight,
     )
 }
 
