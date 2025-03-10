@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Sudoku Fun</string>
+    <string name="mistakes">%1$s/%2$s</string>
+    <string name="undo">Undo</string>
+    <string name="erase">Erase</string>
+    <string name="pause">Pause</string>
+    <string name="hint">Hint</string>
+    <string name="notes">Notes</string>
+    <string name="pause_game_and_go_back_content_desc">Pause game and go back</string>
+    <string name="select_theme_content_desc">Select theme</string>
+    <string name="open_settings_content_desc">Open settings</string>
 </resources>

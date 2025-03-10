@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.veragames.sudokufun.data.mockedBoard
 import com.veragames.sudokufun.domain.model.CellStatus
+import com.veragames.sudokufun.ui.Dimens
 import com.veragames.sudokufun.ui.drawAllBorders
 import com.veragames.sudokufun.ui.drawBottomBorder
 import com.veragames.sudokufun.ui.drawRightBorder
@@ -26,9 +26,6 @@ import com.veragames.sudokufun.ui.model.CellUI
 import com.veragames.sudokufun.ui.theme.SudokuFunTheme
 import com.veragames.sudokufun.ui.theme.green.userConflictCellText
 import kotlin.math.sqrt
-
-private const val CELL_BORDER_WIDTH_NORMAL = 3f
-private const val CELL_BORDER_WIDTH_THICK = CELL_BORDER_WIDTH_NORMAL.times(2.5f)
 
 @Composable
 fun Cell(
@@ -77,7 +74,6 @@ fun Cell(
         modifier =
             modifier
                 .background(color)
-                // .border(0.5.dp, Color.Black)
                 .clickable { onClick(cellUI) },
         contentAlignment = Alignment.Center,
     ) {
@@ -103,7 +99,7 @@ fun Board(
             columns = GridCells.Fixed(boardSize),
             userScrollEnabled = false,
             modifier =
-                modifier.wrapContentSize().border(2.dp, borderColor),
+                modifier.wrapContentSize().border(Dimens.BOARD_BORDER_DP, borderColor),
         ) {
             items(cellList) { cellUI ->
                 Cell(
@@ -112,14 +108,14 @@ fun Board(
                     modifier =
                         Modifier.aspectRatio(1f).drawWithContent {
                             drawContent()
-                            drawAllBorders(borderColor, CELL_BORDER_WIDTH_NORMAL)
+                            drawAllBorders(borderColor, Dimens.CELL_BORDER_WIDTH_NORMAL)
 
                             // Engrosado de bordes
                             if ((cellUI.cell.col + 1) % boxSize == 0 && cellUI.cell.col < boardSize - 1) {
-                                drawRightBorder(borderColor, CELL_BORDER_WIDTH_THICK)
+                                drawRightBorder(borderColor, Dimens.CELL_BORDER_WIDTH_THICK)
                             }
                             if ((cellUI.cell.row + 1) % boxSize == 0) {
-                                drawBottomBorder(borderColor, CELL_BORDER_WIDTH_THICK)
+                                drawBottomBorder(borderColor, Dimens.CELL_BORDER_WIDTH_THICK)
                             }
                         },
                 )
