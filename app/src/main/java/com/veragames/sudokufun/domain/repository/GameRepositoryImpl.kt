@@ -1,10 +1,9 @@
-package com.veragames.sudokufun.domain.services
+package com.veragames.sudokufun.domain.repository
 
 import com.veragames.sudokufun.data.BoardSupplier
 import com.veragames.sudokufun.data.model.Cell
 import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.model.BoardSize
-import com.veragames.sudokufun.domain.usecases.GameUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,11 +11,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-class GameService
+class GameRepositoryImpl
     @Inject
     constructor(
         private val gameBoardSupplier: BoardSupplier,
-    ) : GameUseCases {
+    ) : GameRepository {
         private val board: MutableStateFlow<List<Cell>> = MutableStateFlow(emptyList())
         private val userConflicts: MutableSet<Cell> = mutableSetOf()
 
