@@ -13,5 +13,5 @@ interface GameRepository {
     suspend fun setCellValue(
         cell: Cell,
         value: SudokuValue,
-    )
+    ): Boolean
 }

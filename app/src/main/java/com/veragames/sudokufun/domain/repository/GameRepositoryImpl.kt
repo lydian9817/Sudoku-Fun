@@ -1,5 +1,6 @@
 package com.veragames.sudokufun.domain.repository
 
+import android.util.Log
 import com.veragames.sudokufun.data.BoardSupplier
 import com.veragames.sudokufun.data.model.Cell
 import com.veragames.sudokufun.data.model.SudokuValue
@@ -36,18 +37,26 @@ class GameRepositoryImpl
         override suspend fun setCellValue(
             cell: Cell,
             value: SudokuValue,
-        ) {
+        ): Boolean {
+            var result = false
             board.update { currentBoard ->
                 currentBoard.map { c ->
                     if (c.isSame(cell) && c.completed.not() && c.userCell) {
                         val tmpCell = cell.copy(value = value.value)
                         val conflicts = checkConflicts(tmpCell)
+                        result = conflicts.not()
                         tmpCell.copy(value = value.value, conflict = conflicts, completed = conflicts.not())
                     } else {
                         c
                     }
                 }
             }
+            if (result) {
+                Log.d(TAG, "Valor actualizado correctamente")
+            } else {
+                Log.d(TAG, "Conflictos encontrados")
+            }
+            return result
         }
 
         private fun checkConflicts(cell: Cell): Boolean {
@@ -58,5 +67,9 @@ class GameRepositoryImpl
                 }
             }
             return false
+        }
+
+        private companion object {
+            private const val TAG = "GameRepositoryImpl"
         }
     }
