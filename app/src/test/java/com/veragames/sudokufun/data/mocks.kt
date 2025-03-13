@@ -1,11 +1,8 @@
 package com.veragames.sudokufun.data
 
-import android.content.Context
 import com.veragames.sudokufun.data.model.Cell
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
 
 val mockedBoard =
     listOf(
@@ -92,13 +89,9 @@ val mockedBoard =
         Cell(value = '6', row = 8, col = 8, box = 8, completed = true, userCell = false),
     )
 
-class JsonBoardSupplier
-    @Inject
-    constructor(
-        @ApplicationContext private val context: Context,
-    ) : BoardSupplier {
-        override fun getBoard(size: Int): Flow<List<Cell>> =
-            flow {
-                emit(mockedBoard)
-            }
-    }
+class FakeBoardSupplier : BoardSupplier {
+    override fun getBoard(size: Int): Flow<List<Cell>> =
+        flow {
+            emit(mockedBoard)
+        }
+}

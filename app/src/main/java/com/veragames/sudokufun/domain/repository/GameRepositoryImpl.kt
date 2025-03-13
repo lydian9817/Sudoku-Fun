@@ -1,10 +1,10 @@
-package com.veragames.sudokufun.domain.services
+package com.veragames.sudokufun.domain.repository
 
+import android.util.Log
 import com.veragames.sudokufun.data.BoardSupplier
 import com.veragames.sudokufun.data.model.Cell
 import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.model.BoardSize
-import com.veragames.sudokufun.domain.usecases.GameUseCases
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-class GameService
+class GameRepositoryImpl
     @Inject
     constructor(
         private val gameBoardSupplier: BoardSupplier,
-    ) : GameUseCases {
+    ) : GameRepository {
         private val board: MutableStateFlow<List<Cell>> = MutableStateFlow(emptyList())
         private val userConflicts: MutableSet<Cell> = mutableSetOf()
 
@@ -37,18 +37,26 @@ class GameService
         override suspend fun setCellValue(
             cell: Cell,
             value: SudokuValue,
-        ) {
+        ): Boolean {
+            var result = false
             board.update { currentBoard ->
                 currentBoard.map { c ->
                     if (c.isSame(cell) && c.completed.not() && c.userCell) {
                         val tmpCell = cell.copy(value = value.value)
                         val conflicts = checkConflicts(tmpCell)
+                        result = conflicts.not()
                         tmpCell.copy(value = value.value, conflict = conflicts, completed = conflicts.not())
                     } else {
                         c
                     }
                 }
             }
+            if (result) {
+                Log.d(TAG, "Valor actualizado correctamente")
+            } else {
+                Log.d(TAG, "Conflictos encontrados")
+            }
+            return result
         }
 
         private fun checkConflicts(cell: Cell): Boolean {
@@ -59,5 +67,9 @@ class GameService
                 }
             }
             return false
+        }
+
+        private companion object {
+            private const val TAG = "GameRepositoryImpl"
         }
     }

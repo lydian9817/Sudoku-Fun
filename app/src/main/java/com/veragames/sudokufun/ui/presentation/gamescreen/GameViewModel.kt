@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.model.BoardSize
 import com.veragames.sudokufun.domain.model.CellStatus
-import com.veragames.sudokufun.domain.usecases.GameUseCases
+import com.veragames.sudokufun.domain.usecases.game.GameUseCases
 import com.veragames.sudokufun.ui.model.CellUI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
