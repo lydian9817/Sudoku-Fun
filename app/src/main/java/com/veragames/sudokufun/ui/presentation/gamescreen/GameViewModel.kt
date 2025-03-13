@@ -93,6 +93,12 @@ class GameViewModel
             }
         }
 
+        fun undoMovement() {
+            viewModelScope.launch {
+                gameUseCases.undoMovement()
+            }
+        }
+
         private fun updateStatus() {
             _state.update {
                 it.copy(

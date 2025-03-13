@@ -13,5 +13,5 @@ class SetCellValue
         suspend operator fun invoke(
             cell: Cell,
             value: SudokuValue,
-        ): Boolean = gameRepository.setCellValue(cell, value)
+        ): Boolean = gameRepository.setCellValue(cell, value.value)
     }

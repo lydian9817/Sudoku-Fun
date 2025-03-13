@@ -12,6 +12,7 @@ import com.veragames.sudokufun.domain.usecases.game.GameUseCases
 import com.veragames.sudokufun.domain.usecases.game.GetBoard
 import com.veragames.sudokufun.domain.usecases.game.LoadBoard
 import com.veragames.sudokufun.domain.usecases.game.SetCellValue
+import com.veragames.sudokufun.domain.usecases.game.UndoMovement
 import com.veragames.sudokufun.ui.presentation.gamescreen.GameScreen
 import com.veragames.sudokufun.ui.presentation.gamescreen.GameViewModel
 import com.veragames.sudokufun.ui.theme.SudokuFunTheme
@@ -25,6 +26,7 @@ class BoardTest {
     private lateinit var setCellValueUseCase: SetCellValue
     private lateinit var getBoardUseCase: GetBoard
     private lateinit var eraseCellValueUseCase: EraseCellValue
+    private lateinit var undoMovementUseCase: UndoMovement
     private lateinit var gameViewModel: GameViewModel
 
     @get:Rule
@@ -37,8 +39,17 @@ class BoardTest {
         setCellValueUseCase = SetCellValue(repository)
         getBoardUseCase = GetBoard(repository)
         eraseCellValueUseCase = EraseCellValue(repository)
+        undoMovementUseCase = UndoMovement(repository)
         gameViewModel =
-            GameViewModel(GameUseCases(loadBoardUseCase, getBoardUseCase, setCellValueUseCase, eraseCellValueUseCase))
+            GameViewModel(
+                GameUseCases(
+                    loadBoardUseCase,
+                    getBoardUseCase,
+                    setCellValueUseCase,
+                    eraseCellValueUseCase,
+                    undoMovementUseCase,
+                ),
+            )
 
         composeTestRule.setContent {
             SudokuFunTheme {
@@ -69,5 +80,22 @@ class BoardTest {
         composeTestRule.onNodeWithTag("cell_3_4_4").performClick()
         composeTestRule.onNodeWithTag("erase_button").performClick()
         composeTestRule.onNodeWithTag("cell_3_4_4").assertTextContains(" ")
+    }
+
+    @Test
+    fun undoes_value_on_board() {
+        composeTestRule.apply {
+            onNodeWithTag("cell_0_1_0").performClick()
+            onNodeWithTag("value_FOUR").performClick()
+            onNodeWithTag("value_EIGHT").performClick()
+            onNodeWithTag("value_SEVEN").performClick()
+            onNodeWithTag("cell_0_1_0").assertTextContains("7")
+            onNodeWithTag("undo_button").performClick()
+            onNodeWithTag("cell_0_1_0").assertTextContains("8")
+            onNodeWithTag("undo_button").performClick()
+            onNodeWithTag("cell_0_1_0").assertTextContains("4")
+            onNodeWithTag("undo_button").performClick()
+            onNodeWithTag("cell_0_1_0").assertTextContains(" ")
+        }
     }
 }

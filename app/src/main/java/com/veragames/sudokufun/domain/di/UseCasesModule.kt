@@ -6,6 +6,7 @@ import com.veragames.sudokufun.domain.usecases.game.GameUseCases
 import com.veragames.sudokufun.domain.usecases.game.GetBoard
 import com.veragames.sudokufun.domain.usecases.game.LoadBoard
 import com.veragames.sudokufun.domain.usecases.game.SetCellValue
+import com.veragames.sudokufun.domain.usecases.game.UndoMovement
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,5 +24,6 @@ object UseCasesModule {
             getBoard = GetBoard(gameRepository),
             setCellValue = SetCellValue(gameRepository),
             eraseCellValue = EraseCellValue(gameRepository),
+            undoMovement = UndoMovement(gameRepository),
         )
 }
