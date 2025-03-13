@@ -14,4 +14,6 @@ interface GameRepository {
         cell: Cell,
         value: SudokuValue,
     ): Boolean
+
+    suspend fun eraseCellValue(cell: Cell): Boolean
 }
