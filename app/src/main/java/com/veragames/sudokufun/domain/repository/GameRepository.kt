@@ -1,7 +1,6 @@
 package com.veragames.sudokufun.domain.repository
 
 import com.veragames.sudokufun.data.model.Cell
-import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.model.BoardSize
 import kotlinx.coroutines.flow.StateFlow
 
@@ -12,8 +11,10 @@ interface GameRepository {
 
     suspend fun setCellValue(
         cell: Cell,
-        value: SudokuValue,
+        value: Char,
     ): Boolean
 
     suspend fun eraseCellValue(cell: Cell): Boolean
+
+    suspend fun undoMovement(): Boolean
 }

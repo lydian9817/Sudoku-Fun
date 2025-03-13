@@ -18,7 +18,7 @@ class GameRepositoryImpl
         private val gameBoardSupplier: BoardSupplier,
     ) : GameRepository {
         private val board: MutableStateFlow<List<Cell>> = MutableStateFlow(emptyList())
-        private val userConflicts: MutableSet<Cell> = mutableSetOf()
+        private val userMovements: MutableList<Cell> = mutableListOf()
 
         override suspend fun loadBoard(size: BoardSize) {
             board.update {
@@ -36,16 +36,17 @@ class GameRepositoryImpl
 
         override suspend fun setCellValue(
             cell: Cell,
-            value: SudokuValue,
+            value: Char,
         ): Boolean {
             var result = false
             board.update { currentBoard ->
                 currentBoard.map { c ->
                     if (c.isSame(cell) && c.completed.not() && c.userCell) {
-                        val tmpCell = cell.copy(value = value.value)
+                        userMovements.add(c)
+                        val tmpCell = cell.copy(value = value)
                         val conflicts = checkConflicts(tmpCell)
                         result = conflicts.not()
-                        tmpCell.copy(value = value.value, conflict = conflicts, completed = conflicts.not())
+                        tmpCell.copy(value = value, conflict = conflicts, completed = conflicts.not())
                     } else {
                         c
                     }
@@ -65,6 +66,7 @@ class GameRepositoryImpl
             board.update { currentBoard ->
                 currentBoard.map { c ->
                     if (c.isSame(cell) && c.userCell && c.value != SudokuValue.EMPTY.value) {
+                        userMovements.add(c)
                         result = true
                         c.copy(value = SudokuValue.EMPTY.value, conflict = false, completed = false)
                     } else {
@@ -80,10 +82,34 @@ class GameRepositoryImpl
             return result
         }
 
+        override suspend fun undoMovement(): Boolean {
+            var result = false
+            if (userMovements.isNotEmpty()) {
+                val lastMovementCell = userMovements.removeLastOrNull()
+                if (lastMovementCell != null) {
+                    board.update { currentBoard ->
+                        currentBoard.map { c ->
+                            if (c.isSame(lastMovementCell)) {
+                                result = true
+                                lastMovementCell.copy(conflict = checkConflicts(lastMovementCell))
+                            } else {
+                                c
+                            }
+                        }
+                    }
+                }
+            }
+            if (result) {
+                Log.d(TAG, "Movimiento deshecho correctamente")
+            } else {
+                Log.d(TAG, "No se pudo deshacer el movimiento")
+            }
+            return result
+        }
+
         private fun checkConflicts(cell: Cell): Boolean {
             board.value.forEach { c ->
                 if (cell.conflicts(c)) {
-                    // userConflicts.add(cell)
                     return true
                 }
             }

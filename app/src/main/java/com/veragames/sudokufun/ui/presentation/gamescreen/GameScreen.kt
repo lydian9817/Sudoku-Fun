@@ -66,7 +66,7 @@ fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
             )
 
             GameButtonRow(
-                onUndo = {},
+                onUndo = viewModel::undoMovement,
                 onHint = {},
                 onNotes = {},
                 onErase = viewModel::eraseCellValue,

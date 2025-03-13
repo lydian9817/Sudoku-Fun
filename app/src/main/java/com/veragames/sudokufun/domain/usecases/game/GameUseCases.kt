@@ -5,4 +5,5 @@ data class GameUseCases(
     val getBoard: GetBoard,
     val setCellValue: SetCellValue,
     val eraseCellValue: EraseCellValue,
+    val undoMovement: UndoMovement,
 )
