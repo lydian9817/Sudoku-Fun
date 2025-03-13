@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.veragames.sudokufun.data.mockedBoard
 import com.veragames.sudokufun.domain.model.CellStatus
 import com.veragames.sudokufun.ui.Dimens
+import com.veragames.sudokufun.ui.addCellTestTag
 import com.veragames.sudokufun.ui.drawAllBorders
 import com.veragames.sudokufun.ui.drawBottomBorder
 import com.veragames.sudokufun.ui.drawRightBorder
@@ -68,6 +69,9 @@ fun Cell(
     }
     if (cellUI.cell.userCell && cellUI.cell.completed) {
         textColor = MaterialTheme.colorScheme.primary
+        if (cellUI.status == CellStatus.COMMON_NUMBER) {
+            textColor = MaterialTheme.colorScheme.onSecondary
+        }
     }
 
     Box(
@@ -99,25 +103,29 @@ fun Board(
             columns = GridCells.Fixed(boardSize),
             userScrollEnabled = false,
             modifier =
-                modifier.wrapContentSize().border(Dimens.BOARD_BORDER_DP, borderColor),
+                modifier
+                    .wrapContentSize()
+                    .border(Dimens.BOARD_BORDER_DP, borderColor),
         ) {
             items(cellList) { cellUI ->
                 Cell(
                     cellUI = cellUI,
                     onClick = onCellClick,
                     modifier =
-                        Modifier.aspectRatio(1f).drawWithContent {
-                            drawContent()
-                            drawAllBorders(borderColor, Dimens.CELL_BORDER_WIDTH_NORMAL)
+                        Modifier
+                            .aspectRatio(1f)
+                            .drawWithContent {
+                                drawContent()
+                                drawAllBorders(borderColor, Dimens.CELL_BORDER_WIDTH_NORMAL)
 
-                            // Engrosado de bordes
-                            if ((cellUI.cell.col + 1) % boxSize == 0 && cellUI.cell.col < boardSize - 1) {
-                                drawRightBorder(borderColor, Dimens.CELL_BORDER_WIDTH_THICK)
-                            }
-                            if ((cellUI.cell.row + 1) % boxSize == 0) {
-                                drawBottomBorder(borderColor, Dimens.CELL_BORDER_WIDTH_THICK)
-                            }
-                        },
+                                // Engrosado de bordes
+                                if ((cellUI.cell.col + 1) % boxSize == 0 && cellUI.cell.col < boardSize - 1) {
+                                    drawRightBorder(borderColor, Dimens.CELL_BORDER_WIDTH_THICK)
+                                }
+                                if ((cellUI.cell.row + 1) % boxSize == 0) {
+                                    drawBottomBorder(borderColor, Dimens.CELL_BORDER_WIDTH_THICK)
+                                }
+                            }.addCellTestTag(cellUI),
                 )
             }
         }

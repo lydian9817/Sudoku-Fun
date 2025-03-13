@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.ui.Dimens
+import com.veragames.sudokufun.ui.addSudokuValueTestTag
 
 @Composable
 fun CharacterValue(
@@ -26,7 +27,8 @@ fun CharacterValue(
         colors = CardDefaults.cardColors().copy(containerColor = Color.Transparent),
         modifier =
             modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .addSudokuValueTestTag(value),
     ) {
         CommonText(
             text = value.value.toString(),
