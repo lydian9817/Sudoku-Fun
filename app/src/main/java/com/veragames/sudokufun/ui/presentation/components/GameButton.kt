@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,31 +71,31 @@ fun GameButtonRow(
             textId = R.string.undo,
             iconId = R.drawable.icon_undo,
             onClick = onUndo,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).testTag("undo_button"),
         )
         GameButton(
             textId = R.string.erase,
             iconId = R.drawable.icon_erase,
             onClick = onErase,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).testTag("erase_button"),
         )
         GameButton(
             textId = R.string.notes,
             iconId = R.drawable.icon_notes,
             onClick = onNotes,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).testTag("notes_button"),
         )
         GameButton(
             textId = R.string.hint,
             iconId = R.drawable.icon_hint,
             onClick = onHint,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).testTag("hint_button"),
         )
         GameButton(
             textId = R.string.pause,
             iconId = R.drawable.icon_pause,
             onClick = onHint,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).testTag("pause_button"),
         )
     }
 }

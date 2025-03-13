@@ -54,7 +54,28 @@ class GameRepositoryImpl
             if (result) {
                 Log.d(TAG, "Valor actualizado correctamente")
             } else {
-                Log.d(TAG, "Conflictos encontrados")
+                Log.d(TAG, "Conflictos encontrados o celda completada")
+            }
+            return result
+        }
+
+        override suspend fun eraseCellValue(cell: Cell): Boolean {
+            var result = false
+
+            board.update { currentBoard ->
+                currentBoard.map { c ->
+                    if (c.isSame(cell) && c.userCell && c.value != SudokuValue.EMPTY.value) {
+                        result = true
+                        c.copy(value = SudokuValue.EMPTY.value, conflict = false, completed = false)
+                    } else {
+                        c
+                    }
+                }
+            }
+            if (result) {
+                Log.d(TAG, "Valor borrado correctamente")
+            } else {
+                Log.d(TAG, "No se pudo borrar el valor o la celda no tenia un valor")
             }
             return result
         }

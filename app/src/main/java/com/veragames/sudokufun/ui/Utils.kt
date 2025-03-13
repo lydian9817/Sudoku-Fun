@@ -66,6 +66,6 @@ fun ContentDrawScope.drawAllBorders(
     drawRightBorder(color, sz)
 }
 
-fun Modifier.addCellTestTag(cellUI: CellUI) = testTag("cell_${cellUI.cell.row}_${cellUI.cell.col}_${cellUI.cell.box}_${cellUI.cell.value}")
+fun Modifier.addCellTestTag(cellUI: CellUI) = testTag("cell_${cellUI.cell.row}_${cellUI.cell.col}_${cellUI.cell.box}")
 
 fun Modifier.addSudokuValueTestTag(sudokuValue: SudokuValue) = testTag("value_${sudokuValue.name}")

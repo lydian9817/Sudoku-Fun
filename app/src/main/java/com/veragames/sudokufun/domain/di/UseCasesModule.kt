@@ -1,6 +1,7 @@
 package com.veragames.sudokufun.domain.di
 
 import com.veragames.sudokufun.domain.repository.GameRepository
+import com.veragames.sudokufun.domain.usecases.game.EraseCellValue
 import com.veragames.sudokufun.domain.usecases.game.GameUseCases
 import com.veragames.sudokufun.domain.usecases.game.GetBoard
 import com.veragames.sudokufun.domain.usecases.game.LoadBoard
@@ -21,5 +22,6 @@ object UseCasesModule {
             loadBoard = LoadBoard(gameRepository),
             getBoard = GetBoard(gameRepository),
             setCellValue = SetCellValue(gameRepository),
+            eraseCellValue = EraseCellValue(gameRepository),
         )
 }

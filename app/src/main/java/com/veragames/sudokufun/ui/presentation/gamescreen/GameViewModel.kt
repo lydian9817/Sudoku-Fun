@@ -87,6 +87,12 @@ class GameViewModel
             }
         }
 
+        fun eraseCellValue() {
+            viewModelScope.launch {
+                gameUseCases.eraseCellValue(selectedCell.cell)
+            }
+        }
+
         private fun updateStatus() {
             _state.update {
                 it.copy(
