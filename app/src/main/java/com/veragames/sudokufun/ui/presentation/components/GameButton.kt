@@ -37,14 +37,15 @@ fun GameButton(
         shape = RoundedCornerShape(Dimens.GAME_BUTTON_CORNER_RADIUS),
         modifier = modifier,
         colors = CardDefaults.cardColors().copy(containerColor = Color.Transparent),
-        // verticalArrangement = Arrangement.Center,
-        // horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Icon(
             painter = painterResource(iconId),
             contentDescription = stringResource(textId),
             tint = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.size(24.dp).align(Alignment.CenterHorizontally),
+            modifier =
+                Modifier
+                    .size(24.dp)
+                    .align(Alignment.CenterHorizontally),
         )
         CommonText(
             text = stringResource(textId),
@@ -60,10 +61,16 @@ fun GameButtonRow(
     onErase: () -> Unit,
     onNotes: () -> Unit,
     onHint: () -> Unit,
+    onPause: () -> Unit,
+    onResumeGame: () -> Unit,
+    gameRunning: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(vertical = 24.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -71,32 +78,59 @@ fun GameButtonRow(
             textId = R.string.undo,
             iconId = R.drawable.icon_undo,
             onClick = onUndo,
-            modifier = Modifier.weight(1f).testTag("undo_button"),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .testTag("undo_button"),
         )
         GameButton(
             textId = R.string.erase,
             iconId = R.drawable.icon_erase,
             onClick = onErase,
-            modifier = Modifier.weight(1f).testTag("erase_button"),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .testTag("erase_button"),
         )
         GameButton(
             textId = R.string.notes,
             iconId = R.drawable.icon_notes,
             onClick = onNotes,
-            modifier = Modifier.weight(1f).testTag("notes_button"),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .testTag("notes_button"),
         )
         GameButton(
             textId = R.string.hint,
             iconId = R.drawable.icon_hint,
             onClick = onHint,
-            modifier = Modifier.weight(1f).testTag("hint_button"),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .testTag("hint_button"),
         )
-        GameButton(
-            textId = R.string.pause,
-            iconId = R.drawable.icon_pause,
-            onClick = onHint,
-            modifier = Modifier.weight(1f).testTag("pause_button"),
-        )
+        if (gameRunning) {
+            GameButton(
+                textId = R.string.pause,
+                iconId = R.drawable.icon_pause,
+                onClick = onPause,
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .testTag("pause_button"),
+            )
+        } else {
+            GameButton(
+                textId = R.string.resume,
+                iconId = R.drawable.icon_play,
+                onClick = onResumeGame,
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .testTag("resume_button"),
+            )
+        }
     }
 }
 
@@ -109,6 +143,9 @@ private fun ButtonRowPrev() {
             onNotes = {},
             onHint = {},
             onErase = {},
+            onPause = {},
+            onResumeGame = {},
+            gameRunning = true,
         )
     }
 }

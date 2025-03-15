@@ -11,4 +11,5 @@ data class GameState(
     val mistakes: Int = 0,
     val maxMistakes: Int = 3,
     val userValues: List<SudokuValue> = emptyList(),
+    val gameRunning: Boolean = true,
 )

@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,42 +23,15 @@ class GameViewModel
     constructor(
         private val gameUseCases: GameUseCases,
     ) : ViewModel() {
+        private val formatter = SimpleDateFormat("mm:ss", Locale.getDefault())
         private lateinit var selectedCell: CellUI
         private val initiated = MutableStateFlow(false)
         private val _state = MutableStateFlow(GameState())
         val state: StateFlow<GameState> = _state.asStateFlow()
 
         init {
-            viewModelScope.launch {
-                gameUseCases.loadBoard(BoardSize.NINE)
-                gameUseCases.getBoard().collect { board ->
-                    if (initiated.value.not()) {
-                        _state.update {
-                            it.copy(
-                                board =
-                                    board.map { cell ->
-                                        CellUI(cell)
-                                    },
-                            )
-                        }
-                        selectCell(_state.value.board.find { cellUI -> cellUI.cell.value == SudokuValue.EMPTY.value }!!)
-                        initiated.value = true
-                    } else {
-                        _state.update {
-                            it.copy(
-                                board =
-                                    it.board.mapIndexed { index, cUI ->
-                                        if (board[index].isSame(selectedCell.cell)) {
-                                            selectedCell = selectedCell.copy(cell = board[index])
-                                        }
-                                        cUI.copy(cell = board[index])
-                                    },
-                            )
-                        }
-                        updateStatus()
-                    }
-                }
-            }
+            getBoard()
+            startResolutionChronometer()
         }
 
         fun selectCell(cellUI: CellUI) {
@@ -99,6 +74,24 @@ class GameViewModel
             }
         }
 
+        fun pauseGame() {
+            viewModelScope.launch {
+                gameUseCases.pauseChronometer()
+                _state.update {
+                    it.copy(gameRunning = false)
+                }
+            }
+        }
+
+        fun resumeGame() {
+            viewModelScope.launch {
+                gameUseCases.resumeChronometer()
+                _state.update {
+                    it.copy(gameRunning = true)
+                }
+            }
+        }
+
         private fun updateStatus() {
             _state.update {
                 it.copy(
@@ -120,6 +113,52 @@ class GameViewModel
                             )
                         },
                 )
+            }
+        }
+
+        private fun getBoard() {
+            viewModelScope.launch {
+                gameUseCases.loadBoard(BoardSize.NINE)
+                gameUseCases.getBoard().collect { board ->
+                    if (initiated.value.not()) {
+                        _state.update {
+                            it.copy(
+                                board =
+                                    board.map { cell ->
+                                        CellUI(cell)
+                                    },
+                            )
+                        }
+                        selectCell(_state.value.board.find { cellUI -> cellUI.cell.value == SudokuValue.EMPTY.value }!!)
+                        initiated.value = true
+                    } else {
+                        _state.update {
+                            it.copy(
+                                board =
+                                    it.board.mapIndexed { index, cUI ->
+                                        if (board[index].isSame(selectedCell.cell)) {
+                                            selectedCell = selectedCell.copy(cell = board[index])
+                                        }
+                                        cUI.copy(cell = board[index])
+                                    },
+                            )
+                        }
+                        updateStatus()
+                    }
+                }
+            }
+        }
+
+        private fun startResolutionChronometer() {
+            viewModelScope.launch {
+                gameUseCases.startChronometer()
+                gameUseCases.getChronometer().collect {
+                    _state.update { state ->
+                        state.copy(
+                            time = formatter.format(it),
+                        )
+                    }
+                }
             }
         }
     }

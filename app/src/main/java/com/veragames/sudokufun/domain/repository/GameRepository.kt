@@ -17,4 +17,14 @@ interface GameRepository {
     suspend fun eraseCellValue(cell: Cell): Boolean
 
     suspend fun undoMovement(): Boolean
+
+    suspend fun startChronometer()
+
+    suspend fun pauseChronometer()
+
+    suspend fun resumeChronometer()
+
+    suspend fun stopChronometer(): Long
+
+    suspend fun getChronometer(): StateFlow<Long>
 }

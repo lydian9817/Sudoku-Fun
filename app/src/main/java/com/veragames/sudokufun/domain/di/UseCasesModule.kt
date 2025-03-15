@@ -4,8 +4,13 @@ import com.veragames.sudokufun.domain.repository.GameRepository
 import com.veragames.sudokufun.domain.usecases.game.EraseCellValue
 import com.veragames.sudokufun.domain.usecases.game.GameUseCases
 import com.veragames.sudokufun.domain.usecases.game.GetBoard
+import com.veragames.sudokufun.domain.usecases.game.GetChronometer
 import com.veragames.sudokufun.domain.usecases.game.LoadBoard
+import com.veragames.sudokufun.domain.usecases.game.PauseChronometer
+import com.veragames.sudokufun.domain.usecases.game.ResumeChronometer
 import com.veragames.sudokufun.domain.usecases.game.SetCellValue
+import com.veragames.sudokufun.domain.usecases.game.StartChronometer
+import com.veragames.sudokufun.domain.usecases.game.StopChronometer
 import com.veragames.sudokufun.domain.usecases.game.UndoMovement
 import dagger.Module
 import dagger.Provides
@@ -25,5 +30,10 @@ object UseCasesModule {
             setCellValue = SetCellValue(gameRepository),
             eraseCellValue = EraseCellValue(gameRepository),
             undoMovement = UndoMovement(gameRepository),
+            startChronometer = StartChronometer(gameRepository),
+            pauseChronometer = PauseChronometer(gameRepository),
+            resumeChronometer = ResumeChronometer(gameRepository),
+            stopChronometer = StopChronometer(gameRepository),
+            getChronometer = GetChronometer(gameRepository),
         )
 }

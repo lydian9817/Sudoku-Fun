@@ -70,6 +70,9 @@ fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
                 onHint = {},
                 onNotes = {},
                 onErase = viewModel::eraseCellValue,
+                onPause = viewModel::pauseGame,
+                onResumeGame = viewModel::resumeGame,
+                gameRunning = state.gameRunning,
             )
             LazyVerticalGrid(
                 modifier =

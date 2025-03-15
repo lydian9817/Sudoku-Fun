@@ -1,6 +1,8 @@
 package com.veragames.sudokufun
 
 import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -10,8 +12,13 @@ import com.veragames.sudokufun.domain.repository.GameRepositoryImpl
 import com.veragames.sudokufun.domain.usecases.game.EraseCellValue
 import com.veragames.sudokufun.domain.usecases.game.GameUseCases
 import com.veragames.sudokufun.domain.usecases.game.GetBoard
+import com.veragames.sudokufun.domain.usecases.game.GetChronometer
 import com.veragames.sudokufun.domain.usecases.game.LoadBoard
+import com.veragames.sudokufun.domain.usecases.game.PauseChronometer
+import com.veragames.sudokufun.domain.usecases.game.ResumeChronometer
 import com.veragames.sudokufun.domain.usecases.game.SetCellValue
+import com.veragames.sudokufun.domain.usecases.game.StartChronometer
+import com.veragames.sudokufun.domain.usecases.game.StopChronometer
 import com.veragames.sudokufun.domain.usecases.game.UndoMovement
 import com.veragames.sudokufun.ui.presentation.gamescreen.GameScreen
 import com.veragames.sudokufun.ui.presentation.gamescreen.GameViewModel
@@ -20,13 +27,18 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class BoardTest {
+class GameScreenTest {
     private lateinit var repository: GameRepository
     private lateinit var loadBoardUseCase: LoadBoard
     private lateinit var setCellValueUseCase: SetCellValue
     private lateinit var getBoardUseCase: GetBoard
     private lateinit var eraseCellValueUseCase: EraseCellValue
     private lateinit var undoMovementUseCase: UndoMovement
+    private lateinit var startChronometer: StartChronometer
+    private lateinit var pauseChronometer: PauseChronometer
+    private lateinit var resumeChronometer: ResumeChronometer
+    private lateinit var stopChronometer: StopChronometer
+    private lateinit var getChronometer: GetChronometer
     private lateinit var gameViewModel: GameViewModel
 
     @get:Rule
@@ -40,6 +52,11 @@ class BoardTest {
         getBoardUseCase = GetBoard(repository)
         eraseCellValueUseCase = EraseCellValue(repository)
         undoMovementUseCase = UndoMovement(repository)
+        startChronometer = StartChronometer(repository)
+        pauseChronometer = PauseChronometer(repository)
+        resumeChronometer = ResumeChronometer(repository)
+        stopChronometer = StopChronometer(repository)
+        getChronometer = GetChronometer(repository)
         gameViewModel =
             GameViewModel(
                 GameUseCases(
@@ -48,6 +65,11 @@ class BoardTest {
                     setCellValueUseCase,
                     eraseCellValueUseCase,
                     undoMovementUseCase,
+                    startChronometer,
+                    pauseChronometer,
+                    resumeChronometer,
+                    stopChronometer,
+                    getChronometer,
                 ),
             )
 
@@ -96,6 +118,25 @@ class BoardTest {
             onNodeWithTag("cell_0_1_0").assertTextContains("4")
             onNodeWithTag("undo_button").performClick()
             onNodeWithTag("cell_0_1_0").assertTextContains(" ")
+        }
+    }
+
+    @Test
+    fun chronometer_starts_when_game_starts() {
+        composeTestRule.apply {
+            mainClock.advanceTimeBy(3000)
+            onNode(hasText("00:00")).isNotDisplayed()
+        }
+    }
+
+    @Test
+    fun chronometer_stops() {
+        composeTestRule.apply {
+            mainClock.advanceTimeBy(3000)
+            onNodeWithTag("pause_button").performClick()
+            val time = gameViewModel.state.value.time
+            mainClock.advanceTimeBy(2000)
+            onNodeWithTag("time_info").assertTextContains(time)
         }
     }
 }

@@ -9,4 +9,5 @@
     <string name="pause_game_and_go_back_content_desc">Pause game and go back</string>
     <string name="select_theme_content_desc">Select theme</string>
     <string name="open_settings_content_desc">Open settings</string>
+    <string name="resume">Resume</string>
 </resources>
