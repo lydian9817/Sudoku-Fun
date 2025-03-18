@@ -5,6 +5,7 @@ import com.veragames.sudokufun.data.BoardSupplier
 import com.veragames.sudokufun.data.model.Cell
 import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.model.BoardSize
+import com.veragames.sudokufun.domain.util.Chronometer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +20,8 @@ class GameRepositoryImpl
     ) : GameRepository {
         private val board: MutableStateFlow<List<Cell>> = MutableStateFlow(emptyList())
         private val userMovements: MutableList<Cell> = mutableListOf()
+        private val chronometer = Chronometer()
+        private val gameRunning = MutableStateFlow(false)
 
         override suspend fun loadBoard(size: BoardSize) {
             board.update {
@@ -106,6 +109,18 @@ class GameRepositoryImpl
             }
             return result
         }
+
+        override suspend fun startChronometer() = chronometer.start()
+
+        override suspend fun pauseChronometer() = chronometer.pause()
+
+        override suspend fun resumeChronometer() = chronometer.resume()
+
+        override suspend fun stopChronometer() = chronometer.stop()
+
+        override suspend fun getChronometer(): StateFlow<Long> = chronometer.getChronometer()
+
+        override suspend fun isRunning(): StateFlow<Boolean> = chronometer.isRunning()
 
         private fun checkConflicts(cell: Cell): Boolean {
             board.value.forEach { c ->

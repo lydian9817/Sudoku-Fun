@@ -20,6 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.model.BoardSize
 import com.veragames.sudokufun.ui.presentation.components.Board
@@ -70,6 +72,9 @@ fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
                 onHint = {},
                 onNotes = {},
                 onErase = viewModel::eraseCellValue,
+                onPause = viewModel::pauseGame,
+                onResumeGame = viewModel::resumeGame,
+                gameRunning = state.gameRunning,
             )
             LazyVerticalGrid(
                 modifier =
@@ -89,5 +94,13 @@ fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
                 }
             }
         }
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {
+        viewModel.pauseGame()
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.resumeGame()
     }
 }

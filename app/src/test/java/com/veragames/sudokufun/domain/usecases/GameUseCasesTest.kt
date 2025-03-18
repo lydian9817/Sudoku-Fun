@@ -8,8 +8,13 @@ import com.veragames.sudokufun.domain.repository.GameRepository
 import com.veragames.sudokufun.domain.repository.GameRepositoryImpl
 import com.veragames.sudokufun.domain.usecases.game.EraseCellValue
 import com.veragames.sudokufun.domain.usecases.game.GetBoard
+import com.veragames.sudokufun.domain.usecases.game.GetChronometer
 import com.veragames.sudokufun.domain.usecases.game.LoadBoard
+import com.veragames.sudokufun.domain.usecases.game.PauseChronometer
+import com.veragames.sudokufun.domain.usecases.game.ResumeChronometer
 import com.veragames.sudokufun.domain.usecases.game.SetCellValue
+import com.veragames.sudokufun.domain.usecases.game.StartChronometer
+import com.veragames.sudokufun.domain.usecases.game.StopChronometer
 import com.veragames.sudokufun.domain.usecases.game.UndoMovement
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
@@ -25,6 +30,11 @@ class GameUseCasesTest {
     private lateinit var getBoardUseCase: GetBoard
     private lateinit var eraseCellValueUseCase: EraseCellValue
     private lateinit var undoMovementUseCase: UndoMovement
+    private lateinit var startChronometer: StartChronometer
+    private lateinit var pauseChronometer: PauseChronometer
+    private lateinit var resumeChronometer: ResumeChronometer
+    private lateinit var stopChronometer: StopChronometer
+    private lateinit var getChronometer: GetChronometer
 
     @Before
     fun setUp() {
@@ -34,6 +44,11 @@ class GameUseCasesTest {
         getBoardUseCase = GetBoard(repository)
         eraseCellValueUseCase = EraseCellValue(repository)
         undoMovementUseCase = UndoMovement(repository)
+        startChronometer = StartChronometer(repository)
+        pauseChronometer = PauseChronometer(repository)
+        resumeChronometer = ResumeChronometer(repository)
+        stopChronometer = StopChronometer(repository)
+        getChronometer = GetChronometer(repository)
         runTest {
             loadBoardUseCase(BoardSize.NINE)
         }
@@ -115,6 +130,69 @@ class GameUseCasesTest {
             assertEquals(SudokuValue.FOUR.value, getBoardUseCase().value[1].value)
             undoMovementUseCase()
             assertEquals(SudokuValue.EMPTY.value, getBoardUseCase().value[1].value)
+        }
+    }
+
+    @Test
+    fun `chronometer starts at 0`() {
+        runTest {
+            assertEquals(0L, getChronometer().value)
+        }
+    }
+
+    @Test
+    fun `chronometer starts`() {
+        runTest {
+            startChronometer()
+            Thread.sleep(1500)
+            assertTrue("El cronómetro debe ser mayor a un segundo", getChronometer().value > 1000)
+        }
+    }
+
+    @Test
+    fun `chronometer pauses`() {
+        runTest {
+            startChronometer()
+            Thread.sleep(1500)
+            pauseChronometer()
+            Thread.sleep(2000)
+            assertTrue(
+                "El cronómetro debe ser menor que dos segundos",
+                getChronometer().value < 2000,
+            )
+        }
+    }
+
+    @Test
+    fun `chronometer resumes`() {
+        runTest {
+            startChronometer()
+            Thread.sleep(1500)
+            pauseChronometer()
+            Thread.sleep(2000)
+            assertTrue(
+                "El cronómetro debe ser menor que dos segundos",
+                getChronometer().value < 2000,
+            )
+            resumeChronometer()
+            Thread.sleep(1500)
+            assertTrue(
+                "El cronómetro debe ser mayor que dos segundos",
+                getChronometer().value > 2000,
+            )
+        }
+    }
+
+    @Test
+    fun `chronometer stops, returns total time and resets back to 0`() {
+        runTest {
+            startChronometer()
+            Thread.sleep(1500)
+            assertTrue(
+                "Stop() debe devolver un tiempo total mayor a un segundo",
+                stopChronometer() > 1000,
+            )
+            assertEquals(0L, getChronometer().value)
         }
     }
 }
