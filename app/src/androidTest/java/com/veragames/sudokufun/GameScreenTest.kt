@@ -9,6 +9,7 @@ import androidx.compose.ui.test.performClick
 import com.veragames.sudokufun.data.FakeBoardSupplier
 import com.veragames.sudokufun.domain.repository.GameRepository
 import com.veragames.sudokufun.domain.repository.GameRepositoryImpl
+import com.veragames.sudokufun.domain.usecases.game.CheckIfGameIsRunning
 import com.veragames.sudokufun.domain.usecases.game.EraseCellValue
 import com.veragames.sudokufun.domain.usecases.game.GameUseCases
 import com.veragames.sudokufun.domain.usecases.game.GetBoard
@@ -39,6 +40,7 @@ class GameScreenTest {
     private lateinit var resumeChronometer: ResumeChronometer
     private lateinit var stopChronometer: StopChronometer
     private lateinit var getChronometer: GetChronometer
+    private lateinit var checkIfGameIsRunning: CheckIfGameIsRunning
     private lateinit var gameViewModel: GameViewModel
 
     @get:Rule
@@ -57,6 +59,7 @@ class GameScreenTest {
         resumeChronometer = ResumeChronometer(repository)
         stopChronometer = StopChronometer(repository)
         getChronometer = GetChronometer(repository)
+        checkIfGameIsRunning = CheckIfGameIsRunning(repository)
         gameViewModel =
             GameViewModel(
                 GameUseCases(
@@ -70,6 +73,7 @@ class GameScreenTest {
                     resumeChronometer,
                     stopChronometer,
                     getChronometer,
+                    checkIfGameIsRunning,
                 ),
             )
 

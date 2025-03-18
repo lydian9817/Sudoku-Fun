@@ -45,4 +45,6 @@ class Chronometer {
     }
 
     fun getChronometer() = chronometerMillis.asStateFlow()
+
+    fun isRunning() = isRunning.asStateFlow()
 }

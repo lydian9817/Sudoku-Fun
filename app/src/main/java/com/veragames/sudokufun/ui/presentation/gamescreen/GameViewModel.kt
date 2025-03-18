@@ -32,6 +32,7 @@ class GameViewModel
         init {
             getBoard()
             startResolutionChronometer()
+            checkIfGameIsRunning()
         }
 
         fun selectCell(cellUI: CellUI) {
@@ -77,18 +78,12 @@ class GameViewModel
         fun pauseGame() {
             viewModelScope.launch {
                 gameUseCases.pauseChronometer()
-                _state.update {
-                    it.copy(gameRunning = false)
-                }
             }
         }
 
         fun resumeGame() {
             viewModelScope.launch {
                 gameUseCases.resumeChronometer()
-                _state.update {
-                    it.copy(gameRunning = true)
-                }
             }
         }
 
@@ -156,6 +151,18 @@ class GameViewModel
                     _state.update { state ->
                         state.copy(
                             time = formatter.format(it),
+                        )
+                    }
+                }
+            }
+        }
+
+        private fun checkIfGameIsRunning() {
+            viewModelScope.launch {
+                gameUseCases.checkIfGameIsRunning().collect {
+                    _state.update { state ->
+                        state.copy(
+                            gameRunning = it,
                         )
                     }
                 }

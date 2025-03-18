@@ -1,6 +1,7 @@
 package com.veragames.sudokufun.domain.di
 
 import com.veragames.sudokufun.domain.repository.GameRepository
+import com.veragames.sudokufun.domain.usecases.game.CheckIfGameIsRunning
 import com.veragames.sudokufun.domain.usecases.game.EraseCellValue
 import com.veragames.sudokufun.domain.usecases.game.GameUseCases
 import com.veragames.sudokufun.domain.usecases.game.GetBoard
@@ -35,5 +36,6 @@ object UseCasesModule {
             resumeChronometer = ResumeChronometer(gameRepository),
             stopChronometer = StopChronometer(gameRepository),
             getChronometer = GetChronometer(gameRepository),
+            checkIfGameIsRunning = CheckIfGameIsRunning(gameRepository),
         )
 }

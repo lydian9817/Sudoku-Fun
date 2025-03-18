@@ -21,6 +21,7 @@ class GameRepositoryImpl
         private val board: MutableStateFlow<List<Cell>> = MutableStateFlow(emptyList())
         private val userMovements: MutableList<Cell> = mutableListOf()
         private val chronometer = Chronometer()
+        private val gameRunning = MutableStateFlow(false)
 
         override suspend fun loadBoard(size: BoardSize) {
             board.update {
@@ -109,21 +110,17 @@ class GameRepositoryImpl
             return result
         }
 
-        override suspend fun startChronometer() {
-            chronometer.start()
-        }
+        override suspend fun startChronometer() = chronometer.start()
 
-        override suspend fun pauseChronometer() {
-            chronometer.pause()
-        }
+        override suspend fun pauseChronometer() = chronometer.pause()
 
-        override suspend fun resumeChronometer() {
-            chronometer.resume()
-        }
+        override suspend fun resumeChronometer() = chronometer.resume()
 
         override suspend fun stopChronometer() = chronometer.stop()
 
         override suspend fun getChronometer(): StateFlow<Long> = chronometer.getChronometer()
+
+        override suspend fun isRunning(): StateFlow<Boolean> = chronometer.isRunning()
 
         private fun checkConflicts(cell: Cell): Boolean {
             board.value.forEach { c ->
