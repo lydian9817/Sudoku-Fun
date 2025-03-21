@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.veragames.sudokufun.R
 import com.veragames.sudokufun.ui.Dimens
 import com.veragames.sudokufun.ui.theme.SudokuFunTheme
+import com.veragames.sudokufun.ui.util.TestTags
 
 @Composable
 fun GameButton(
@@ -62,8 +63,6 @@ fun GameButtonRow(
     onNotes: () -> Unit,
     onHint: () -> Unit,
     onPause: () -> Unit,
-    onResumeGame: () -> Unit,
-    gameRunning: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -81,7 +80,7 @@ fun GameButtonRow(
             modifier =
                 Modifier
                     .weight(1f)
-                    .testTag("undo_button"),
+                    .testTag(TestTags.UNDO_BUTTON),
         )
         GameButton(
             textId = R.string.erase,
@@ -90,7 +89,7 @@ fun GameButtonRow(
             modifier =
                 Modifier
                     .weight(1f)
-                    .testTag("erase_button"),
+                    .testTag(TestTags.ERASE_BUTTON),
         )
         GameButton(
             textId = R.string.notes,
@@ -99,7 +98,7 @@ fun GameButtonRow(
             modifier =
                 Modifier
                     .weight(1f)
-                    .testTag("notes_button"),
+                    .testTag(TestTags.NOTES_BUTTON),
         )
         GameButton(
             textId = R.string.hint,
@@ -108,29 +107,17 @@ fun GameButtonRow(
             modifier =
                 Modifier
                     .weight(1f)
-                    .testTag("hint_button"),
+                    .testTag(TestTags.HINT_BUTTON),
         )
-        if (gameRunning) {
-            GameButton(
-                textId = R.string.pause,
-                iconId = R.drawable.icon_pause,
-                onClick = onPause,
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .testTag("pause_button"),
-            )
-        } else {
-            GameButton(
-                textId = R.string.resume,
-                iconId = R.drawable.icon_play,
-                onClick = onResumeGame,
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .testTag("resume_button"),
-            )
-        }
+        GameButton(
+            textId = R.string.pause,
+            iconId = R.drawable.icon_pause,
+            onClick = onPause,
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .testTag(TestTags.PAUSE_BUTTON),
+        )
     }
 }
 
@@ -144,8 +131,6 @@ private fun ButtonRowPrev() {
             onHint = {},
             onErase = {},
             onPause = {},
-            onResumeGame = {},
-            gameRunning = true,
         )
     }
 }

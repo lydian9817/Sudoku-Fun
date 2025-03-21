@@ -15,26 +15,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.veragames.sudokufun.data.mockedBoard
 import com.veragames.sudokufun.domain.model.CellStatus
 import com.veragames.sudokufun.ui.Dimens
-import com.veragames.sudokufun.ui.addCellTestTag
-import com.veragames.sudokufun.ui.drawAllBorders
-import com.veragames.sudokufun.ui.drawBottomBorder
-import com.veragames.sudokufun.ui.drawRightBorder
 import com.veragames.sudokufun.ui.model.CellUI
 import com.veragames.sudokufun.ui.theme.SudokuFunTheme
 import com.veragames.sudokufun.ui.theme.green.userConflictCellText
+import com.veragames.sudokufun.ui.util.TestTags
+import com.veragames.sudokufun.ui.util.drawAllBorders
+import com.veragames.sudokufun.ui.util.drawBottomBorder
+import com.veragames.sudokufun.ui.util.drawRightBorder
 import kotlin.math.sqrt
 
 @Composable
 fun Cell(
     cellUI: CellUI,
     onClick: (cell: CellUI) -> Unit,
+    isGameRunning: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val color: Color
+    var color: Color
     var textColor: Color
 
     when (cellUI.status) {
@@ -74,11 +76,13 @@ fun Cell(
         }
     }
 
+    if (isGameRunning.not()) {
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+        textColor = MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
     Box(
-        modifier =
-            modifier
-                .background(color)
-                .clickable { onClick(cellUI) },
+        modifier = modifier.background(color).clickable { onClick(cellUI) },
         contentAlignment = Alignment.Center,
     ) {
         CommonText(
@@ -93,6 +97,7 @@ fun Cell(
 fun Board(
     cellList: List<CellUI>,
     onCellClick: (cell: CellUI) -> Unit,
+    isGameRunning: Boolean,
     modifier: Modifier = Modifier,
 ) {
     if (cellList.isNotEmpty()) {
@@ -102,15 +107,13 @@ fun Board(
         LazyVerticalGrid(
             columns = GridCells.Fixed(boardSize),
             userScrollEnabled = false,
-            modifier =
-                modifier
-                    .wrapContentSize()
-                    .border(Dimens.BOARD_BORDER_DP, borderColor),
+            modifier = modifier.wrapContentSize().border(Dimens.BOARD_BORDER_DP, borderColor),
         ) {
             items(cellList) { cellUI ->
                 Cell(
                     cellUI = cellUI,
                     onClick = onCellClick,
+                    isGameRunning = isGameRunning,
                     modifier =
                         Modifier
                             .aspectRatio(1f)
@@ -125,7 +128,7 @@ fun Board(
                                 if ((cellUI.cell.row + 1) % boxSize == 0) {
                                     drawBottomBorder(borderColor, Dimens.CELL_BORDER_WIDTH_THICK)
                                 }
-                            }.addCellTestTag(cellUI),
+                            }.testTag(TestTags.getCellTestTag(cellUI)),
                 )
             }
         }
@@ -136,6 +139,6 @@ fun Board(
 @Composable
 private fun BoardPrev() {
     SudokuFunTheme {
-        Board(mockedBoard.map { CellUI(it) }, {})
+        Board(mockedBoard.map { CellUI(it) }, {}, true)
     }
 }

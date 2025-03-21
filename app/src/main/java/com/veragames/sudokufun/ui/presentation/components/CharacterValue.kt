@@ -10,10 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.ui.Dimens
-import com.veragames.sudokufun.ui.addSudokuValueTestTag
+import com.veragames.sudokufun.ui.util.TestTags
 
 @Composable
 fun CharacterValue(
@@ -28,7 +29,7 @@ fun CharacterValue(
         modifier =
             modifier
                 .fillMaxSize()
-                .addSudokuValueTestTag(value),
+                .testTag(TestTags.getSudokuValueTestTag(value)),
     ) {
         CommonText(
             text = value.value.toString(),

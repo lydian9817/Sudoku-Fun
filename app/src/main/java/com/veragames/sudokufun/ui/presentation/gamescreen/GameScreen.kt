@@ -29,6 +29,7 @@ import com.veragames.sudokufun.ui.presentation.components.BoardInfo
 import com.veragames.sudokufun.ui.presentation.components.CharacterValue
 import com.veragames.sudokufun.ui.presentation.components.GameButtonRow
 import com.veragames.sudokufun.ui.presentation.components.GameTopBar
+import com.veragames.sudokufun.ui.presentation.components.PausedGameDialog
 
 @Composable
 fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
@@ -65,6 +66,7 @@ fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
             Board(
                 cellList = state.board,
                 onCellClick = { viewModel.selectCell(it) },
+                isGameRunning = state.gameRunning,
             )
 
             GameButtonRow(
@@ -73,8 +75,6 @@ fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
                 onNotes = {},
                 onErase = viewModel::eraseCellValue,
                 onPause = viewModel::pauseGame,
-                onResumeGame = viewModel::resumeGame,
-                gameRunning = state.gameRunning,
             )
             LazyVerticalGrid(
                 modifier =
@@ -94,6 +94,16 @@ fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
                 }
             }
         }
+    }
+
+    if (state.gameRunning.not()) {
+        PausedGameDialog(
+            time = state.time,
+            mistakes = state.mistakes,
+            maxMistakes = state.maxMistakes,
+            difficulty = state.difficulty,
+            onResumeClick = viewModel::resumeGame,
+        )
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {

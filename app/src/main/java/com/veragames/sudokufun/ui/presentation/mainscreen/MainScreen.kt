@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.veragames.sudokufun.ui.presentation.components.AppTitleImg
-import com.veragames.sudokufun.ui.presentation.components.MainScreenButton
+import com.veragames.sudokufun.ui.presentation.components.GeneralButton
 import com.veragames.sudokufun.ui.theme.SudokuFunTheme
 
 @Composable
@@ -27,9 +28,11 @@ fun MainScreen(onNewGame: () -> Unit) {
                 .fillMaxSize(),
     ) {
         AppTitleImg(modifier = Modifier.fillMaxWidth().height(80.dp))
-        MainScreenButton(
+        GeneralButton(
             text = "Nuevo Juego",
+            textColor = MaterialTheme.colorScheme.onPrimary,
             onClick = onNewGame,
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         )
     }
 }
