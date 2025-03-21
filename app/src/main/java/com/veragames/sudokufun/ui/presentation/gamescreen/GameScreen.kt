@@ -66,6 +66,7 @@ fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
             Board(
                 cellList = state.board,
                 onCellClick = { viewModel.selectCell(it) },
+                isGameRunning = state.gameRunning,
             )
 
             GameButtonRow(

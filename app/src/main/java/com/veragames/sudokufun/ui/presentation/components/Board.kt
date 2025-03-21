@@ -33,9 +33,10 @@ import kotlin.math.sqrt
 fun Cell(
     cellUI: CellUI,
     onClick: (cell: CellUI) -> Unit,
+    isGameRunning: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val color: Color
+    var color: Color
     var textColor: Color
 
     when (cellUI.status) {
@@ -75,11 +76,13 @@ fun Cell(
         }
     }
 
+    if (isGameRunning.not()) {
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+        textColor = MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
     Box(
-        modifier =
-            modifier
-                .background(color)
-                .clickable { onClick(cellUI) },
+        modifier = modifier.background(color).clickable { onClick(cellUI) },
         contentAlignment = Alignment.Center,
     ) {
         CommonText(
@@ -94,6 +97,7 @@ fun Cell(
 fun Board(
     cellList: List<CellUI>,
     onCellClick: (cell: CellUI) -> Unit,
+    isGameRunning: Boolean,
     modifier: Modifier = Modifier,
 ) {
     if (cellList.isNotEmpty()) {
@@ -103,15 +107,13 @@ fun Board(
         LazyVerticalGrid(
             columns = GridCells.Fixed(boardSize),
             userScrollEnabled = false,
-            modifier =
-                modifier
-                    .wrapContentSize()
-                    .border(Dimens.BOARD_BORDER_DP, borderColor),
+            modifier = modifier.wrapContentSize().border(Dimens.BOARD_BORDER_DP, borderColor),
         ) {
             items(cellList) { cellUI ->
                 Cell(
                     cellUI = cellUI,
                     onClick = onCellClick,
+                    isGameRunning = isGameRunning,
                     modifier =
                         Modifier
                             .aspectRatio(1f)
@@ -137,6 +139,6 @@ fun Board(
 @Composable
 private fun BoardPrev() {
     SudokuFunTheme {
-        Board(mockedBoard.map { CellUI(it) }, {})
+        Board(mockedBoard.map { CellUI(it) }, {}, true)
     }
 }

@@ -2,14 +2,12 @@ package com.veragames.sudokufun.ui.presentation.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,17 +29,18 @@ fun GeneralButton(
         onClick = onClick,
         colors = colors,
         shape = RoundedCornerShape(Dimens.GENERAL_CORNER_RADIUS),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = Dimens.GENERAL_ELEVATION,
-            pressedElevation = Dimens.GENERAL_PRESSED_ELEVATION
-        ),
-        border = borderStroke
+        elevation =
+            ButtonDefaults.buttonElevation(
+                defaultElevation = Dimens.GENERAL_ELEVATION,
+                pressedElevation = Dimens.GENERAL_PRESSED_ELEVATION,
+            ),
+        border = borderStroke,
     ) {
         CommonText(
             text = text,
             style = MaterialTheme.typography.titleMedium,
             color = textColor,
-            modifier = Modifier.padding(horizontal = 8.dp)
+            modifier = Modifier.padding(horizontal = 8.dp),
         )
     }
 }
@@ -53,7 +52,7 @@ private fun GeneralButtonPrev() {
         GeneralButton(
             text = "Nuevo Juego",
             onClick = {},
-            textColor = MaterialTheme.colorScheme.onPrimary
+            textColor = MaterialTheme.colorScheme.onPrimary,
         )
     }
 }
