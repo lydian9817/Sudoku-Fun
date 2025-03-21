@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.veragames.sudokufun.R
 import com.veragames.sudokufun.ui.theme.SudokuFunTheme
+import com.veragames.sudokufun.ui.util.TestTags
 
 @Composable
 fun BoardInfo(
@@ -46,7 +47,7 @@ fun BoardInfo(
             modifier =
                 Modifier
                     .weight(1f)
-                    .testTag("difficulty_info"),
+                    .testTag(TestTags.DIFFICULTY_INFO),
         )
         CommonText(
             text = currentTime,
@@ -54,7 +55,7 @@ fun BoardInfo(
             modifier =
                 Modifier
                     .weight(1f)
-                    .testTag("time_info"),
+                    .testTag(TestTags.TIME_INFO),
         )
         MistakesInfo(
             mistakes = mistakes,
@@ -62,7 +63,7 @@ fun BoardInfo(
             modifier =
                 Modifier
                     .weight(1f)
-                    .testTag("mistakes_info"),
+                    .testTag(TestTags.MISTAKES_INFO),
         )
     }
 }

@@ -15,17 +15,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.veragames.sudokufun.data.mockedBoard
 import com.veragames.sudokufun.domain.model.CellStatus
 import com.veragames.sudokufun.ui.Dimens
-import com.veragames.sudokufun.ui.addCellTestTag
-import com.veragames.sudokufun.ui.drawAllBorders
-import com.veragames.sudokufun.ui.drawBottomBorder
-import com.veragames.sudokufun.ui.drawRightBorder
 import com.veragames.sudokufun.ui.model.CellUI
 import com.veragames.sudokufun.ui.theme.SudokuFunTheme
 import com.veragames.sudokufun.ui.theme.green.userConflictCellText
+import com.veragames.sudokufun.ui.util.TestTags
+import com.veragames.sudokufun.ui.util.drawAllBorders
+import com.veragames.sudokufun.ui.util.drawBottomBorder
+import com.veragames.sudokufun.ui.util.drawRightBorder
 import kotlin.math.sqrt
 
 @Composable
@@ -125,7 +126,7 @@ fun Board(
                                 if ((cellUI.cell.row + 1) % boxSize == 0) {
                                     drawBottomBorder(borderColor, Dimens.CELL_BORDER_WIDTH_THICK)
                                 }
-                            }.addCellTestTag(cellUI),
+                            }.testTag(TestTags.getCellTestTag(cellUI)),
                 )
             }
         }

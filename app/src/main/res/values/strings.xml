@@ -10,4 +10,8 @@
     <string name="select_theme_content_desc">Select theme</string>
     <string name="open_settings_content_desc">Open settings</string>
     <string name="resume">Resume</string>
+    <string name="game_paused">Game paused</string>
+    <string name="time">Time</string>
+    <string name="mistakes_txt">Mistakes</string>
+    <string name="difficulty">Difficulty</string>
 </resources>

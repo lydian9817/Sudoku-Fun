@@ -1,12 +1,8 @@
-package com.veragames.sudokufun.ui
+package com.veragames.sudokufun.ui.util
 
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.platform.testTag
-import com.veragames.sudokufun.data.model.SudokuValue
-import com.veragames.sudokufun.ui.model.CellUI
 
 fun ContentDrawScope.drawTopBorder(
     color: Color,
@@ -65,7 +61,3 @@ fun ContentDrawScope.drawAllBorders(
     drawLeftBorder(color, sz)
     drawRightBorder(color, sz)
 }
-
-fun Modifier.addCellTestTag(cellUI: CellUI) = testTag("cell_${cellUI.cell.row}_${cellUI.cell.col}_${cellUI.cell.box}")
-
-fun Modifier.addSudokuValueTestTag(sudokuValue: SudokuValue) = testTag("value_${sudokuValue.name}")
