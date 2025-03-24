@@ -27,14 +27,28 @@ import com.veragames.sudokufun.ui.theme.SudokuFunTheme
 import com.veragames.sudokufun.ui.util.TestTags
 
 @Composable
-fun PausedGameDialog(
+fun GameDialog(
     time: String,
     mistakes: Int,
     maxMistakes: Int,
     difficulty: String,
-    onResumeClick: () -> Unit,
+    onButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
+    gameCompleted: Boolean = false,
 ) {
+    val titleId: Int
+    val buttonTextId: Int
+    val buttonTestTag: String
+
+    if (gameCompleted) {
+        titleId = R.string.game_completed
+        buttonTextId = R.string.go_to_main_screen
+        buttonTestTag = TestTags.GO_TO_MAIN_SCREEN_BUTTON
+    } else {
+        titleId = R.string.game_paused
+        buttonTextId = R.string.resume
+        buttonTestTag = TestTags.RESUME_BUTTON
+    }
     Dialog(
         onDismissRequest = {},
         properties =
@@ -44,7 +58,7 @@ fun PausedGameDialog(
             ),
     ) {
         Card(
-            modifier = modifier.testTag(TestTags.PAUSED_DIALOG),
+            modifier = modifier.testTag(TestTags.GAME_DIALOG),
             shape = RoundedCornerShape(Dimens.GENERAL_CORNER_RADIUS),
             colors =
                 CardDefaults.cardColors(
@@ -53,12 +67,15 @@ fun PausedGameDialog(
             elevation = CardDefaults.cardElevation(defaultElevation = Dimens.GENERAL_ELEVATION),
         ) {
             Column(
-                modifier = Modifier.padding(24.dp).align(Alignment.CenterHorizontally),
+                modifier =
+                    Modifier
+                        .padding(24.dp)
+                        .align(Alignment.CenterHorizontally),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly,
             ) {
                 CommonText(
-                    text = stringResource(R.string.game_paused),
+                    text = stringResource(titleId),
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(vertical = 8.dp),
                     style = MaterialTheme.typography.headlineMedium,
@@ -88,9 +105,13 @@ fun PausedGameDialog(
                     )
                 }
                 GeneralButton(
-                    text = stringResource(R.string.resume),
-                    onClick = onResumeClick,
-                    modifier = Modifier.padding(horizontal = 16.dp).testTag(TestTags.RESUME_BUTTON),
+                    text =
+                        stringResource(buttonTextId),
+                    onClick = onButtonClick,
+                    modifier =
+                        Modifier
+                            .padding(horizontal = 16.dp)
+                            .testTag(buttonTestTag),
                     colors =
                         ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -131,12 +152,27 @@ fun DialogGameInfoItem(
 @Composable
 private fun PausedGameDialogPrev() {
     SudokuFunTheme {
-        PausedGameDialog(
+        GameDialog(
             time = "01:00",
             mistakes = 1,
             maxMistakes = 3,
             difficulty = "Normal",
-            onResumeClick = {},
+            onButtonClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun CompletedGameDialogPrev() {
+    SudokuFunTheme {
+        GameDialog(
+            time = "01:00",
+            mistakes = 1,
+            maxMistakes = 3,
+            difficulty = "Normal",
+            onButtonClick = {},
+            gameCompleted = true,
         )
     }
 }

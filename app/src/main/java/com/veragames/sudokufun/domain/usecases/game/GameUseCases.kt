@@ -13,4 +13,5 @@ data class GameUseCases(
     val getChronometer: GetChronometer,
     val checkIfGameIsRunning: CheckIfGameIsRunning,
     val showHint: ShowHint,
+    val checkGameCompletion: CheckGameCompletion,
 )

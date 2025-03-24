@@ -1,5 +1,6 @@
 package com.veragames.sudokufun.ui.presentation.gamescreen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,11 +29,14 @@ import com.veragames.sudokufun.ui.presentation.components.Board
 import com.veragames.sudokufun.ui.presentation.components.BoardInfo
 import com.veragames.sudokufun.ui.presentation.components.CharacterValue
 import com.veragames.sudokufun.ui.presentation.components.GameButtonRow
+import com.veragames.sudokufun.ui.presentation.components.GameDialog
 import com.veragames.sudokufun.ui.presentation.components.GameTopBar
-import com.veragames.sudokufun.ui.presentation.components.PausedGameDialog
 
 @Composable
-fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
+fun GameScreen(
+    onBackToMainScreenClick: () -> Unit,
+    viewModel: GameViewModel = hiltViewModel(),
+) {
     val state by viewModel.state.collectAsState()
 
     Scaffold(
@@ -66,7 +70,7 @@ fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
             Board(
                 cellList = state.board,
                 onCellClick = { viewModel.selectCell(it) },
-                isGameRunning = state.gameRunning,
+                isGameRunning = state.gameRunning || state.completed,
             )
 
             GameButtonRow(
@@ -97,14 +101,29 @@ fun GameScreen(viewModel: GameViewModel = hiltViewModel()) {
         }
     }
 
-    if (state.gameRunning.not()) {
-        PausedGameDialog(
+    if (state.completed) {
+        GameDialog(
             time = state.time,
             mistakes = state.mistakes,
             maxMistakes = state.maxMistakes,
             difficulty = state.difficulty,
-            onResumeClick = viewModel::resumeGame,
+            onButtonClick = onBackToMainScreenClick,
+            gameCompleted = true,
         )
+    } else if (state.gameRunning.not()) {
+        GameDialog(
+            time = state.time,
+            mistakes = state.mistakes,
+            maxMistakes = state.maxMistakes,
+            difficulty = state.difficulty,
+            onButtonClick = viewModel::resumeGame,
+        )
+    }
+
+    BackHandler {
+        if (state.gameRunning) {
+            viewModel.pauseGame()
+        }
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {

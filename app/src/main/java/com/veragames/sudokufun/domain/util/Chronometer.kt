@@ -14,6 +14,7 @@ class Chronometer {
     private val chronometerMillis = MutableStateFlow(0L)
 
     fun start() {
+        // chronometerMillis.update { 0 }
         resume()
         CoroutineScope(Dispatchers.IO).launch {
             while (isStopped.value.not()) {
@@ -36,12 +37,9 @@ class Chronometer {
         isStopped.value = false
     }
 
-    fun stop(): Long {
-        val totalTime = chronometerMillis.value
+    fun stop() {
         isRunning.value = false
         isStopped.value = true
-        chronometerMillis.update { 0L }
-        return totalTime
     }
 
     fun getChronometer() = chronometerMillis.asStateFlow()

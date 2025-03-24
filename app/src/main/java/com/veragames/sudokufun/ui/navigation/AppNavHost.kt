@@ -24,7 +24,12 @@ fun AppNavHost(modifier: Modifier = Modifier) {
             )
         }
         composable(Screen.GAME.name) {
-            GameScreen()
+            GameScreen(
+                onBackToMainScreenClick = {
+                    navController.navigate(Screen.MAIN.name)
+                    navController.popBackStack(Screen.MAIN.name, inclusive = false)
+                },
+            )
         }
     }
 }

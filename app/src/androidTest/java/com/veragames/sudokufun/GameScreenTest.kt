@@ -8,10 +8,12 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.veragames.sudokufun.data.FakeBoardSupplier
+import com.veragames.sudokufun.data.mockedBoardSolved
 import com.veragames.sudokufun.data.model.Cell
 import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.repository.GameRepository
 import com.veragames.sudokufun.domain.repository.GameRepositoryImpl
+import com.veragames.sudokufun.domain.usecases.game.CheckGameCompletion
 import com.veragames.sudokufun.domain.usecases.game.CheckIfGameIsRunning
 import com.veragames.sudokufun.domain.usecases.game.EraseCellValue
 import com.veragames.sudokufun.domain.usecases.game.GameUseCases
@@ -48,6 +50,7 @@ class GameScreenTest {
     private lateinit var getChronometer: GetChronometer
     private lateinit var checkIfGameIsRunning: CheckIfGameIsRunning
     private lateinit var showHint: ShowHint
+    private lateinit var checkGameCompletion: CheckGameCompletion
     private lateinit var gameViewModel: GameViewModel
 
     @get:Rule
@@ -68,6 +71,7 @@ class GameScreenTest {
         getChronometer = GetChronometer(repository)
         checkIfGameIsRunning = CheckIfGameIsRunning(repository)
         showHint = ShowHint(repository)
+        checkGameCompletion = CheckGameCompletion(repository)
         gameViewModel =
             GameViewModel(
                 GameUseCases(
@@ -83,12 +87,16 @@ class GameScreenTest {
                     getChronometer,
                     checkIfGameIsRunning,
                     showHint,
+                    checkGameCompletion,
                 ),
             )
 
         composeTestRule.setContent {
             SudokuFunTheme {
-                GameScreen(gameViewModel)
+                GameScreen(
+                    onBackToMainScreenClick = {},
+                    viewModel = gameViewModel,
+                )
             }
         }
     }
@@ -165,8 +173,24 @@ class GameScreenTest {
         }
     }
 
+    @Test
+    fun game_completes_and_shows_dialog() {
+        composeTestRule.apply {
+            mockedBoardSolved.filter { it.userCell == true }.forEach {
+                onNodeWithTag(getCellUiTag(it.row, it.col)).performClick()
+                onNodeWithTag(getSudokuValueTag(it.value)).performClick()
+            }
+            onNodeWithTag(TestTags.GO_TO_MAIN_SCREEN_BUTTON).assertExists()
+        }
+    }
+
     private fun getCellUiTag(
         row: Int,
         col: Int,
     ) = TestTags.getCellTestTag(CellUI(Cell(' ', row, col, 0)))
+
+    private fun getSudokuValueTag(value: Char): String {
+        val sudokuValue = SudokuValue.entries.find { it.value == value }
+        return TestTags.getSudokuValueTestTag(sudokuValue!!)
+    }
 }

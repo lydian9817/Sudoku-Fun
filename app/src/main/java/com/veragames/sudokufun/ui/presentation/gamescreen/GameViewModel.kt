@@ -60,6 +60,10 @@ class GameViewModel
         fun setCellValue(value: SudokuValue) {
             viewModelScope.launch {
                 gameUseCases.setCellValue(selectedCell.cell, value)
+                if (gameUseCases.checkGameCompletion()) {
+                    gameUseCases.stopChronometer()
+                    _state.update { it.copy(completed = true) }
+                }
             }
         }
 
