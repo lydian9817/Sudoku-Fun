@@ -1,6 +1,7 @@
 package com.veragames.sudokufun.domain.di
 
 import com.veragames.sudokufun.domain.repository.GameRepository
+import com.veragames.sudokufun.domain.usecases.game.CheckGameCompletion
 import com.veragames.sudokufun.domain.usecases.game.CheckIfGameIsRunning
 import com.veragames.sudokufun.domain.usecases.game.EraseCellValue
 import com.veragames.sudokufun.domain.usecases.game.GameUseCases
@@ -18,13 +19,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object UseCasesModule {
     @Provides
-    @Singleton
     fun bindGameUseCases(gameRepository: GameRepository): GameUseCases =
         GameUseCases(
             loadBoard = LoadBoard(gameRepository),
@@ -39,5 +38,6 @@ object UseCasesModule {
             getChronometer = GetChronometer(gameRepository),
             checkIfGameIsRunning = CheckIfGameIsRunning(gameRepository),
             showHint = ShowHint(gameRepository),
+            checkGameCompletion = CheckGameCompletion(gameRepository),
         )
 }

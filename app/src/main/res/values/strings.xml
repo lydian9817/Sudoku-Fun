@@ -14,4 +14,6 @@
     <string name="time">Time</string>
     <string name="mistakes_txt">Mistakes</string>
     <string name="difficulty">Difficulty</string>
+    <string name="go_to_main_screen">Go to main screen</string>
+    <string name="game_completed">Game completed!</string>
 </resources>

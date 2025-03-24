@@ -11,11 +11,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.veragames.sudokufun.ui.presentation.components.AppTitleImg
 import com.veragames.sudokufun.ui.presentation.components.GeneralButton
 import com.veragames.sudokufun.ui.theme.SudokuFunTheme
+import com.veragames.sudokufun.ui.util.TestTags
 
 @Composable
 fun MainScreen(onNewGame: () -> Unit) {
@@ -32,7 +34,8 @@ fun MainScreen(onNewGame: () -> Unit) {
             text = "Nuevo Juego",
             textColor = MaterialTheme.colorScheme.onPrimary,
             onClick = onNewGame,
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+            modifier = Modifier.testTag(TestTags.START_GAME_BUTTON)
         )
     }
 }

@@ -2,6 +2,7 @@ package com.veragames.sudokufun.domain.usecases
 
 import com.veragames.sudokufun.data.FakeBoardSupplier
 import com.veragames.sudokufun.data.mockedBoard
+import com.veragames.sudokufun.data.mockedBoardSolved
 import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.model.BoardSize
 import com.veragames.sudokufun.domain.repository.GameRepository
@@ -158,19 +159,6 @@ class GameRepositoryTest {
     }
 
     @Test
-    fun `chronometer stops, returns total time and resets back to 0`() {
-        runTest {
-            repository.startChronometer()
-            Thread.sleep(1500)
-            assertTrue(
-                "Stop() debe devolver un tiempo total mayor a un segundo",
-                repository.stopChronometer() > 1000,
-            )
-            assertEquals(0L, repository.getChronometer().value)
-        }
-    }
-
-    @Test
     fun `hints are shown till max hints reached`() {
         runTest {
             val firstBoard = repository.getBoard().value
@@ -187,6 +175,16 @@ class GameRepositoryTest {
             assertNotEquals(secondBoard, thirdBoard)
             assertNotEquals(thirdBoard, fourthBoard)
             assertEquals(fourthBoard, fifthBoard)
+        }
+    }
+
+    @Test
+    fun `checks game completion returns true when game is completed`() {
+        runTest {
+            mockedBoardSolved.forEach {
+                repository.setCellValue(it, it.value)
+            }
+            assertTrue(repository.checkGameCompletion())
         }
     }
 }

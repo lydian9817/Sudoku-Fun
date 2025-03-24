@@ -26,9 +26,11 @@ interface GameRepository {
 
     suspend fun isRunning(): StateFlow<Boolean>
 
-    suspend fun stopChronometer(): Long
+    suspend fun stopChronometer()
 
     suspend fun getChronometer(): StateFlow<Long>
 
     suspend fun showHint(): Int
+
+    suspend fun checkGameCompletion(): Boolean
 }

@@ -134,6 +134,16 @@ class GameRepositoryImpl
             return hintsAvailable.value
         }
 
+        override suspend fun checkGameCompletion(): Boolean {
+            board.value.forEach {
+                if (it.completed.not() || it.conflict) {
+                    return false
+                }
+            }
+            Log.d(TAG, "Juego completado")
+            return true
+        }
+
         override suspend fun isRunning(): StateFlow<Boolean> = chronometer.isRunning()
 
         private fun checkConflicts(cell: Cell): Boolean {
