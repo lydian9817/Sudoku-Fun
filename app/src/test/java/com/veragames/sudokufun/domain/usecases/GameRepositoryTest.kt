@@ -10,6 +10,7 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 
@@ -166,6 +167,26 @@ class GameRepositoryTest {
                 repository.stopChronometer() > 1000,
             )
             assertEquals(0L, repository.getChronometer().value)
+        }
+    }
+
+    @Test
+    fun `hints are shown till max hints reached`() {
+        runTest {
+            val firstBoard = repository.getBoard().value
+            repository.showHint()
+            val secondBoard = repository.getBoard().value
+            repository.showHint()
+            val thirdBoard = repository.getBoard().value
+            repository.showHint()
+            val fourthBoard = repository.getBoard().value
+            repository.showHint()
+            val fifthBoard = repository.getBoard().value
+
+            assertNotEquals(firstBoard, secondBoard)
+            assertNotEquals(secondBoard, thirdBoard)
+            assertNotEquals(thirdBoard, fourthBoard)
+            assertEquals(fourthBoard, fifthBoard)
         }
     }
 }

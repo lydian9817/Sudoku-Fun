@@ -29,4 +29,6 @@ interface GameRepository {
     suspend fun stopChronometer(): Long
 
     suspend fun getChronometer(): StateFlow<Long>
+
+    suspend fun showHint(): Int
 }

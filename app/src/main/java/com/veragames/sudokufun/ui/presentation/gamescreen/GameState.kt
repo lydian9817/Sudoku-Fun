@@ -12,4 +12,6 @@ data class GameState(
     val maxMistakes: Int = 3,
     val userValues: List<SudokuValue> = emptyList(),
     val gameRunning: Boolean = true,
+    val hintEnabled: Boolean = true,
+    val hintsRemaining: Int = 3,
 )

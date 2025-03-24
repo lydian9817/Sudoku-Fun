@@ -87,6 +87,19 @@ class GameViewModel
             }
         }
 
+        fun showHint() {
+            viewModelScope.launch {
+                val hintsRemaining = gameUseCases.showHint()
+                val hintEnabled = hintsRemaining > 0
+                _state.update {
+                    it.copy(
+                        hintEnabled = hintEnabled,
+                        hintsRemaining = hintsRemaining,
+                    )
+                }
+            }
+        }
+
         private fun updateStatus() {
             _state.update {
                 it.copy(

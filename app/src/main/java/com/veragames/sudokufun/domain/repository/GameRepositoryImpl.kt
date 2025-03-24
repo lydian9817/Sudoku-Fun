@@ -18,12 +18,15 @@ class GameRepositoryImpl
     constructor(
         private val gameBoardSupplier: BoardSupplier,
     ) : GameRepository {
+        private lateinit var boardSize: BoardSize
         private val board: MutableStateFlow<List<Cell>> = MutableStateFlow(emptyList())
+        private val solvedBoard: MutableStateFlow<List<Cell>> = MutableStateFlow(emptyList())
         private val userMovements: MutableList<Cell> = mutableListOf()
         private val chronometer = Chronometer()
-        private val gameRunning = MutableStateFlow(false)
+        private val hintsAvailable = MutableStateFlow(MAX_HINTS)
 
         override suspend fun loadBoard(size: BoardSize) {
+            boardSize = size
             board.update {
                 gameBoardSupplier.getBoard(size.size).first().map {
                     if (it.value == SudokuValue.EMPTY.value) {
@@ -32,6 +35,9 @@ class GameRepositoryImpl
                         it.copy(userCell = false)
                     }
                 }
+            }
+            solvedBoard.update {
+                gameBoardSupplier.getSolvedBoard(size.size).first()
             }
         }
 
@@ -120,6 +126,14 @@ class GameRepositoryImpl
 
         override suspend fun getChronometer(): StateFlow<Long> = chronometer.getChronometer()
 
+        override suspend fun showHint(): Int {
+            if (hintsAvailable.value > 0) {
+                hintsAvailable.update { it - 1 }
+                solveRandomCell()
+            }
+            return hintsAvailable.value
+        }
+
         override suspend fun isRunning(): StateFlow<Boolean> = chronometer.isRunning()
 
         private fun checkConflicts(cell: Cell): Boolean {
@@ -131,7 +145,27 @@ class GameRepositoryImpl
             return false
         }
 
+        private suspend fun solveRandomCell() {
+            val cell = board.value.filter { it.value == SudokuValue.EMPTY.value }.random()
+            val possibleValues =
+                when (boardSize) {
+                    BoardSize.NINE -> SudokuValue.NINE_VALUES.toMutableList()
+                    BoardSize.SIXTEEN -> SudokuValue.SIXTEEN_VALUES.toMutableList()
+                }
+            possibleValues.shuffle()
+            run setValue@{
+                possibleValues.forEach {
+                    val tmpCell = cell.copy(value = it.value)
+                    if (checkConflicts(tmpCell).not()) {
+                        setCellValue(tmpCell, it.value)
+                        return@setValue
+                    }
+                }
+            }
+        }
+
         private companion object {
             private const val TAG = "GameRepositoryImpl"
+            private const val MAX_HINTS = 3
         }
     }
