@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface BoardSupplier {
     fun getBoard(size: Int): Flow<List<Cell>>
+
+    fun getSolvedBoard(size: Int): Flow<List<Cell>>
 }

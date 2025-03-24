@@ -10,6 +10,7 @@ import com.veragames.sudokufun.domain.usecases.game.LoadBoard
 import com.veragames.sudokufun.domain.usecases.game.PauseChronometer
 import com.veragames.sudokufun.domain.usecases.game.ResumeChronometer
 import com.veragames.sudokufun.domain.usecases.game.SetCellValue
+import com.veragames.sudokufun.domain.usecases.game.ShowHint
 import com.veragames.sudokufun.domain.usecases.game.StartChronometer
 import com.veragames.sudokufun.domain.usecases.game.StopChronometer
 import com.veragames.sudokufun.domain.usecases.game.UndoMovement
@@ -37,5 +38,6 @@ object UseCasesModule {
             stopChronometer = StopChronometer(gameRepository),
             getChronometer = GetChronometer(gameRepository),
             checkIfGameIsRunning = CheckIfGameIsRunning(gameRepository),
+            showHint = ShowHint(gameRepository),
         )
 }

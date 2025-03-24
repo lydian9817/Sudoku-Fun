@@ -1,5 +1,6 @@
 package com.veragames.sudokufun
 
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isNotDisplayed
@@ -20,6 +21,7 @@ import com.veragames.sudokufun.domain.usecases.game.LoadBoard
 import com.veragames.sudokufun.domain.usecases.game.PauseChronometer
 import com.veragames.sudokufun.domain.usecases.game.ResumeChronometer
 import com.veragames.sudokufun.domain.usecases.game.SetCellValue
+import com.veragames.sudokufun.domain.usecases.game.ShowHint
 import com.veragames.sudokufun.domain.usecases.game.StartChronometer
 import com.veragames.sudokufun.domain.usecases.game.StopChronometer
 import com.veragames.sudokufun.domain.usecases.game.UndoMovement
@@ -45,6 +47,7 @@ class GameScreenTest {
     private lateinit var stopChronometer: StopChronometer
     private lateinit var getChronometer: GetChronometer
     private lateinit var checkIfGameIsRunning: CheckIfGameIsRunning
+    private lateinit var showHint: ShowHint
     private lateinit var gameViewModel: GameViewModel
 
     @get:Rule
@@ -64,6 +67,7 @@ class GameScreenTest {
         stopChronometer = StopChronometer(repository)
         getChronometer = GetChronometer(repository)
         checkIfGameIsRunning = CheckIfGameIsRunning(repository)
+        showHint = ShowHint(repository)
         gameViewModel =
             GameViewModel(
                 GameUseCases(
@@ -78,6 +82,7 @@ class GameScreenTest {
                     stopChronometer,
                     getChronometer,
                     checkIfGameIsRunning,
+                    showHint,
                 ),
             )
 
@@ -147,6 +152,16 @@ class GameScreenTest {
             val time = gameViewModel.state.value.time
             mainClock.advanceTimeBy(2000)
             onNodeWithTag(TestTags.TIME_INFO).assertTextContains(time)
+        }
+    }
+
+    @Test
+    fun hint_button_disables_after_max_hints_reached() {
+        composeTestRule.apply {
+            onNodeWithTag(TestTags.HINT_BUTTON).performClick()
+            onNodeWithTag(TestTags.HINT_BUTTON).performClick()
+            onNodeWithTag(TestTags.HINT_BUTTON).performClick()
+            onNodeWithTag(TestTags.HINT_BUTTON).assertIsNotEnabled()
         }
     }
 

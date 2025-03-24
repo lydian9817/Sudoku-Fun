@@ -32,17 +32,30 @@ fun GameButton(
     @DrawableRes iconId: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
+    val color = if (enabled) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+    }
     Card(
         onClick = onClick,
         shape = RoundedCornerShape(Dimens.GAME_BUTTON_CORNER_RADIUS),
         modifier = modifier,
-        colors = CardDefaults.cardColors().copy(containerColor = Color.Transparent),
+        colors =
+            CardDefaults
+                .cardColors()
+                .copy(
+                    containerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                ),
+        enabled = enabled,
     ) {
         Icon(
             painter = painterResource(iconId),
             contentDescription = stringResource(textId),
-            tint = MaterialTheme.colorScheme.onSurface,
+            tint = color,
             modifier =
                 Modifier
                     .size(24.dp)
@@ -50,7 +63,7 @@ fun GameButton(
         )
         CommonText(
             text = stringResource(textId),
-            color = MaterialTheme.colorScheme.onSurface,
+            color = color,
             modifier = Modifier.align(Alignment.CenterHorizontally),
         )
     }
@@ -63,6 +76,7 @@ fun GameButtonRow(
     onNotes: () -> Unit,
     onHint: () -> Unit,
     onPause: () -> Unit,
+    hintEnabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -104,6 +118,7 @@ fun GameButtonRow(
             textId = R.string.hint,
             iconId = R.drawable.icon_hint,
             onClick = onHint,
+            enabled = hintEnabled,
             modifier =
                 Modifier
                     .weight(1f)
@@ -121,7 +136,7 @@ fun GameButtonRow(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun ButtonRowPrev() {
     SudokuFunTheme {
@@ -131,6 +146,7 @@ private fun ButtonRowPrev() {
             onHint = {},
             onErase = {},
             onPause = {},
+            hintEnabled = false,
         )
     }
 }
