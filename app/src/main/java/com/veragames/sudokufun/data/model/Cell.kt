@@ -8,6 +8,7 @@ data class Cell(
     val userCell: Boolean = true,
     val completed: Boolean = false,
     val conflict: Boolean = false,
+    val notes: List<Note> = emptyList(),
 ) {
     fun conflicts(c: Cell): Boolean =
         value == c.value &&

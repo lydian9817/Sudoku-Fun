@@ -15,4 +15,5 @@ data class GameState(
     val hintEnabled: Boolean = true,
     val hintsRemaining: Int = 3,
     val completed: Boolean = false,
+    val notesEnabled: Boolean = false,
 )

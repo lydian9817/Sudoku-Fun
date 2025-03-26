@@ -14,4 +14,5 @@ data class GameUseCases(
     val checkIfGameIsRunning: CheckIfGameIsRunning,
     val showHint: ShowHint,
     val checkGameCompletion: CheckGameCompletion,
+    val noteValue: NoteValue,
 )

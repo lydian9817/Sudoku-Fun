@@ -8,6 +8,7 @@ import com.veragames.sudokufun.domain.usecases.game.GameUseCases
 import com.veragames.sudokufun.domain.usecases.game.GetBoard
 import com.veragames.sudokufun.domain.usecases.game.GetChronometer
 import com.veragames.sudokufun.domain.usecases.game.LoadBoard
+import com.veragames.sudokufun.domain.usecases.game.NoteValue
 import com.veragames.sudokufun.domain.usecases.game.PauseChronometer
 import com.veragames.sudokufun.domain.usecases.game.ResumeChronometer
 import com.veragames.sudokufun.domain.usecases.game.SetCellValue
@@ -39,5 +40,6 @@ object UseCasesModule {
             checkIfGameIsRunning = CheckIfGameIsRunning(gameRepository),
             showHint = ShowHint(gameRepository),
             checkGameCompletion = CheckGameCompletion(gameRepository),
+            noteValue = NoteValue(gameRepository),
         )
 }

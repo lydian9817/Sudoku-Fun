@@ -20,6 +20,7 @@ import com.veragames.sudokufun.domain.usecases.game.GameUseCases
 import com.veragames.sudokufun.domain.usecases.game.GetBoard
 import com.veragames.sudokufun.domain.usecases.game.GetChronometer
 import com.veragames.sudokufun.domain.usecases.game.LoadBoard
+import com.veragames.sudokufun.domain.usecases.game.NoteValue
 import com.veragames.sudokufun.domain.usecases.game.PauseChronometer
 import com.veragames.sudokufun.domain.usecases.game.ResumeChronometer
 import com.veragames.sudokufun.domain.usecases.game.SetCellValue
@@ -51,6 +52,7 @@ class GameScreenTest {
     private lateinit var checkIfGameIsRunning: CheckIfGameIsRunning
     private lateinit var showHint: ShowHint
     private lateinit var checkGameCompletion: CheckGameCompletion
+    private lateinit var noteValue: NoteValue
     private lateinit var gameViewModel: GameViewModel
 
     @get:Rule
@@ -72,6 +74,7 @@ class GameScreenTest {
         checkIfGameIsRunning = CheckIfGameIsRunning(repository)
         showHint = ShowHint(repository)
         checkGameCompletion = CheckGameCompletion(repository)
+        noteValue = NoteValue(repository)
         gameViewModel =
             GameViewModel(
                 GameUseCases(
@@ -88,6 +91,7 @@ class GameScreenTest {
                     checkIfGameIsRunning,
                     showHint,
                     checkGameCompletion,
+                    noteValue,
                 ),
             )
 
@@ -181,6 +185,17 @@ class GameScreenTest {
                 onNodeWithTag(getSudokuValueTag(it.value)).performClick()
             }
             onNodeWithTag(TestTags.GO_TO_MAIN_SCREEN_BUTTON).assertExists()
+        }
+    }
+
+    @Test
+    fun notes_are_shown_after_enabling_notes() {
+        composeTestRule.apply {
+            val cell = CellUI(Cell(' ', 0, 1, 0))
+            onNodeWithTag(TestTags.NOTES_BUTTON).performClick()
+            onNodeWithTag(TestTags.getCellTestTag(cell)).performClick()
+            onNodeWithTag(TestTags.getSudokuValueTestTag(SudokuValue.FIVE)).performClick()
+            onNodeWithTag(TestTags.getCellNoteTestTag(cell, SudokuValue.FIVE), true).assertExists()
         }
     }
 

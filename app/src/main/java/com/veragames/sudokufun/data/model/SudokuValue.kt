@@ -20,12 +20,4 @@ enum class SudokuValue(
     E('E'),
     F('F'),
     G('G'),
-    ;
-
-    companion object {
-        val NINE_VALUES = listOf(ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE)
-        val SIXTEEN_VALUES =
-            listOf(ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, A, B, C, D, E, F, G)
-        val USER_VALUES = listOf(NINE_VALUES, SIXTEEN_VALUES)
-    }
 }

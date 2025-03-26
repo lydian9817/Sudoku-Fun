@@ -104,6 +104,22 @@ class GameViewModel
             }
         }
 
+        fun enableNotes(value: Boolean) {
+            viewModelScope.launch {
+                _state.update {
+                    it.copy(
+                        notesEnabled = value,
+                    )
+                }
+            }
+        }
+
+        fun noteValue(sudokuValue: SudokuValue) {
+            viewModelScope.launch {
+                gameUseCases.noteValue(selectedCell.cell, sudokuValue)
+            }
+        }
+
         private fun updateStatus() {
             _state.update {
                 it.copy(

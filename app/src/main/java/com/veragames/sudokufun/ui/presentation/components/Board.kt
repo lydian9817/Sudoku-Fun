@@ -3,6 +3,7 @@ package com.veragames.sudokufun.ui.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.wrapContentSize
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.veragames.sudokufun.data.mockedBoard
+import com.veragames.sudokufun.data.model.Note
 import com.veragames.sudokufun.domain.model.CellStatus
 import com.veragames.sudokufun.ui.Dimens
 import com.veragames.sudokufun.ui.model.CellUI
@@ -69,6 +71,7 @@ fun Cell(
     if (cellUI.cell.userCell && cellUI.cell.conflict) {
         textColor = userConflictCellText
     }
+
     if (cellUI.cell.userCell && cellUI.cell.completed) {
         textColor = MaterialTheme.colorScheme.primary
         if (cellUI.status == CellStatus.COMMON_NUMBER) {
@@ -82,13 +85,73 @@ fun Cell(
     }
 
     Box(
-        modifier = modifier.background(color).clickable { onClick(cellUI) },
+        modifier =
+            modifier
+                .background(color)
+                .clickable { onClick(cellUI) },
+        contentAlignment = Alignment.Center,
+    ) {
+        if (cellUI.cell.notes.any { it.noted == true }) {
+            NotesGrid(cellUI = cellUI)
+        } else {
+            CommonText(
+                text = cellUI.cell.value.toString(),
+                color = textColor,
+                style = MaterialTheme.typography.titleLarge,
+            )
+        }
+    }
+}
+
+@Composable
+fun NotesGrid(
+    cellUI: CellUI,
+    modifier: Modifier = Modifier,
+) {
+    LazyVerticalGrid(
+        columns =
+            GridCells.Fixed(
+                sqrt(
+                    cellUI.cell.notes.size
+                        .toDouble(),
+                ).toInt(),
+            ),
+        userScrollEnabled = false,
+        verticalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier.wrapContentSize(),
+    ) {
+        items(cellUI.cell.notes) { note ->
+            Note(
+                note = note,
+                modifier =
+                    Modifier
+                        .aspectRatio(1f)
+                        .testTag(TestTags.getCellNoteTestTag(cellUI, note.value)),
+            )
+        }
+    }
+}
+
+@Composable
+fun Note(
+    note: Note,
+    modifier: Modifier = Modifier,
+) {
+    val color =
+        if (note.noted) {
+            MaterialTheme.colorScheme.onSecondaryContainer
+        } else {
+            Color.Transparent
+        }
+    Box(
+        modifier = modifier.wrapContentSize(),
         contentAlignment = Alignment.Center,
     ) {
         CommonText(
-            text = cellUI.cell.value.toString(),
-            color = textColor,
-            style = MaterialTheme.typography.titleLarge,
+            text = note.value.value.toString(),
+            color = color,
+            style = MaterialTheme.typography.labelSmall,
         )
     }
 }
@@ -101,13 +164,16 @@ fun Board(
     modifier: Modifier = Modifier,
 ) {
     if (cellList.isNotEmpty()) {
-        val boardSize = sqrt(cellList.size.toDouble()).toInt()
-        val boxSize = sqrt(boardSize.toDouble()).toInt()
+        val boardColumns = sqrt(cellList.size.toDouble()).toInt()
+        val boxSize = sqrt(boardColumns.toDouble()).toInt()
         val borderColor = MaterialTheme.colorScheme.outline
         LazyVerticalGrid(
-            columns = GridCells.Fixed(boardSize),
+            columns = GridCells.Fixed(boardColumns),
             userScrollEnabled = false,
-            modifier = modifier.wrapContentSize().border(Dimens.BOARD_BORDER_DP, borderColor),
+            modifier =
+                modifier
+                    .wrapContentSize()
+                    .border(Dimens.BOARD_BORDER_DP, borderColor),
         ) {
             items(cellList) { cellUI ->
                 Cell(
@@ -122,7 +188,7 @@ fun Board(
                                 drawAllBorders(borderColor, Dimens.CELL_BORDER_WIDTH_NORMAL)
 
                                 // Engrosado de bordes
-                                if ((cellUI.cell.col + 1) % boxSize == 0 && cellUI.cell.col < boardSize - 1) {
+                                if ((cellUI.cell.col + 1) % boxSize == 0 && cellUI.cell.col < boardColumns - 1) {
                                     drawRightBorder(borderColor, Dimens.CELL_BORDER_WIDTH_THICK)
                                 }
                                 if ((cellUI.cell.row + 1) % boxSize == 0) {
