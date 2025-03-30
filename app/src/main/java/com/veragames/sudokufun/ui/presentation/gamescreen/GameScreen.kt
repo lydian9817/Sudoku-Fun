@@ -68,7 +68,12 @@ fun GameScreen(
             )
             Board(
                 cellList = state.board,
-                onCellClick = { viewModel.selectCell(it) },
+                onCellClick = {
+                    viewModel.selectCell(it)
+                    if (state.selectedValue != null) {
+                        viewModel.setCellValue(state.selectedValue!!)
+                    }
+                },
                 isGameRunning = state.gameRunning || state.completed,
             )
 
@@ -80,6 +85,7 @@ fun GameScreen(
                         viewModel.enableNotes(false)
                     } else {
                         viewModel.enableNotes(true)
+                        viewModel.selectValue(null)
                     }
                 },
                 onErase = viewModel::eraseCellValue,
@@ -89,7 +95,10 @@ fun GameScreen(
                 notesEnabled = state.notesEnabled,
             )
             LazyVerticalGrid(
-                modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalArrangement = Arrangement.Center,
                 userScrollEnabled = false,
@@ -98,11 +107,17 @@ fun GameScreen(
                 items(BoardSize.NINE.values) { value ->
                     CharacterValue(
                         value = value,
+                        selected = state.selectedValue != null && state.selectedValue == value,
                         onClick = {
-                            if (state.notesEnabled) {
-                                viewModel.noteValue(value)
-                            } else {
-                                viewModel.setCellValue(value)
+                            when {
+                                state.notesEnabled -> viewModel.noteValue(value)
+                                state.selectedValue != null -> viewModel.selectValue(null)
+                                else -> viewModel.setCellValue(value)
+                            }
+                        },
+                        onLongClick = {
+                            if (state.notesEnabled.not()) {
+                                viewModel.selectValue(value)
                             }
                         },
                     )

@@ -16,4 +16,5 @@ data class GameState(
     val hintsRemaining: Int = 3,
     val completed: Boolean = false,
     val notesEnabled: Boolean = false,
+    val selectedValue: SudokuValue? = null,
 )
