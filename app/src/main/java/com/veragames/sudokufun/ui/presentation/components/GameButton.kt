@@ -3,11 +3,14 @@ package com.veragames.sudokufun.ui.presentation.components
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -27,6 +30,33 @@ import com.veragames.sudokufun.ui.theme.SudokuFunTheme
 import com.veragames.sudokufun.ui.util.TestTags
 
 @Composable
+fun GameButtonContent(
+    @StringRes textId: Int,
+    @DrawableRes iconId: Int,
+    modifier: Modifier = Modifier,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier,
+    ) {
+        Icon(
+            painter = painterResource(iconId),
+            contentDescription = stringResource(textId),
+            tint = contentColor,
+            modifier =
+                Modifier
+                    .size(24.dp),
+        )
+        CommonText(
+            text = stringResource(textId),
+            color = contentColor,
+        )
+    }
+}
+
+@Composable
 fun GameButton(
     @StringRes textId: Int,
     @DrawableRes iconId: Int,
@@ -35,6 +65,8 @@ fun GameButton(
     enabled: Boolean = true,
     containerColor: Color = Color.Transparent,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    hasBadge: Boolean = false,
+    badgeContent: String? = null,
 ) {
     Card(
         onClick = onClick,
@@ -49,20 +81,36 @@ fun GameButton(
                 ),
         enabled = enabled,
     ) {
-        Icon(
-            painter = painterResource(iconId),
-            contentDescription = stringResource(textId),
-            tint = contentColor,
-            modifier =
-                Modifier
-                    .size(24.dp)
-                    .align(Alignment.CenterHorizontally),
-        )
-        CommonText(
-            text = stringResource(textId),
-            color = contentColor,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-        )
+        if (hasBadge) {
+            BadgedBox(
+                badge = {
+                    Badge(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    ) {
+                        badgeContent?.let {
+                            CommonText(
+                                text = it,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            )
+                        }
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            ) {
+                GameButtonContent(
+                    textId = textId,
+                    iconId = iconId,
+                    contentColor = contentColor,
+                )
+            }
+        } else {
+            GameButtonContent(
+                textId = textId,
+                iconId = iconId,
+                contentColor = contentColor,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            )
+        }
     }
 }
 
@@ -76,6 +124,7 @@ fun GameButtonRow(
     hintEnabled: Boolean,
     notesEnabled: Boolean,
     modifier: Modifier = Modifier,
+    hintsRemaining: Int = 0,
 ) {
     Row(
         modifier =
@@ -129,6 +178,8 @@ fun GameButtonRow(
             iconId = R.drawable.icon_hint,
             onClick = onHint,
             enabled = hintEnabled,
+            hasBadge = true,
+            badgeContent = hintsRemaining.toString(),
             contentColor =
                 if (hintEnabled) {
                     MaterialTheme.colorScheme.onSurface
@@ -164,6 +215,7 @@ private fun ButtonRowPrev() {
             onPause = {},
             hintEnabled = false,
             notesEnabled = true,
+            hintsRemaining = 3,
         )
     }
 }

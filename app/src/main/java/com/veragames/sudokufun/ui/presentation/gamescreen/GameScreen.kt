@@ -85,6 +85,7 @@ fun GameScreen(
                 onErase = viewModel::eraseCellValue,
                 onPause = viewModel::pauseGame,
                 hintEnabled = state.hintEnabled,
+                hintsRemaining = state.hintsRemaining,
                 notesEnabled = state.notesEnabled,
             )
             LazyVerticalGrid(
