@@ -165,6 +165,7 @@ class GameRepositoryImpl
                                             note
                                         }
                                     },
+                                value = SudokuValue.EMPTY.value,
                             )
                         } else {
                             c
