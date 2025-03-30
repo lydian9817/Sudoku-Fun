@@ -33,12 +33,9 @@ fun GameButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    containerColor: Color = Color.Transparent,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
-    val color = if (enabled) {
-        MaterialTheme.colorScheme.onSurface
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-    }
     Card(
         onClick = onClick,
         shape = RoundedCornerShape(Dimens.GAME_BUTTON_CORNER_RADIUS),
@@ -47,15 +44,15 @@ fun GameButton(
             CardDefaults
                 .cardColors()
                 .copy(
-                    containerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
+                    containerColor = containerColor,
+                    disabledContainerColor = containerColor,
                 ),
         enabled = enabled,
     ) {
         Icon(
             painter = painterResource(iconId),
             contentDescription = stringResource(textId),
-            tint = color,
+            tint = contentColor,
             modifier =
                 Modifier
                     .size(24.dp)
@@ -63,7 +60,7 @@ fun GameButton(
         )
         CommonText(
             text = stringResource(textId),
-            color = color,
+            color = contentColor,
             modifier = Modifier.align(Alignment.CenterHorizontally),
         )
     }
@@ -77,6 +74,7 @@ fun GameButtonRow(
     onHint: () -> Unit,
     onPause: () -> Unit,
     hintEnabled: Boolean,
+    notesEnabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -109,6 +107,18 @@ fun GameButtonRow(
             textId = R.string.notes,
             iconId = R.drawable.icon_notes,
             onClick = onNotes,
+            contentColor =
+                if (notesEnabled) {
+                    MaterialTheme.colorScheme.onTertiaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
+            containerColor =
+                if (notesEnabled) {
+                    MaterialTheme.colorScheme.tertiaryContainer
+                } else {
+                    Color.Transparent
+                },
             modifier =
                 Modifier
                     .weight(1f)
@@ -119,6 +129,12 @@ fun GameButtonRow(
             iconId = R.drawable.icon_hint,
             onClick = onHint,
             enabled = hintEnabled,
+            contentColor =
+                if (hintEnabled) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                },
             modifier =
                 Modifier
                     .weight(1f)
@@ -147,6 +163,7 @@ private fun ButtonRowPrev() {
             onErase = {},
             onPause = {},
             hintEnabled = false,
+            notesEnabled = true,
         )
     }
 }

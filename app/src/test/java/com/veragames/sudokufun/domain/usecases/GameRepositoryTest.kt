@@ -181,10 +181,77 @@ class GameRepositoryTest {
     @Test
     fun `checks game completion returns true when game is completed`() {
         runTest {
-            mockedBoardSolved.forEach {
+            mockedBoardSolved.filter { it.userCell == true }.forEach {
                 repository.setCellValue(it, it.value)
             }
             assertTrue(repository.checkGameCompletion())
+        }
+    }
+
+    @Test
+    fun `notes and unnotes a cell note`() {
+        runTest {
+            repository.noteValue(repository.getBoard().value[1], SudokuValue.FIVE.value)
+            assertTrue(
+                repository
+                    .getBoard()
+                    .value[1]
+                    .notes
+                    .any { it.noted == true },
+            )
+            repository.noteValue(repository.getBoard().value[1], SudokuValue.FIVE.value)
+            assertFalse(
+                repository
+                    .getBoard()
+                    .value[1]
+                    .notes
+                    .any { it.noted == true },
+            )
+        }
+    }
+
+    @Test
+    fun `notes are unnoted when cell is erased`() {
+        runTest {
+            repository.noteValue(repository.getBoard().value[1], SudokuValue.FIVE.value)
+            repository.eraseCellValue(repository.getBoard().value[1])
+            assertFalse(
+                repository
+                    .getBoard()
+                    .value[1]
+                    .notes
+                    .any { it.noted == true },
+            )
+        }
+    }
+
+    @Test
+    fun `notes are unnoted when a value is set`() {
+        runTest {
+            repository.noteValue(repository.getBoard().value[1], SudokuValue.FIVE.value)
+            repository.setCellValue(repository.getBoard().value[1], SudokuValue.FIVE.value)
+            assertFalse(
+                repository
+                    .getBoard()
+                    .value[1]
+                    .notes
+                    .any { it.noted == true },
+            )
+        }
+    }
+
+    @Test
+    fun `notes are unnoted when undoing a movement`() {
+        runTest {
+            repository.noteValue(repository.getBoard().value[1], SudokuValue.FIVE.value)
+            repository.undoMovement()
+            assertFalse(
+                repository
+                    .getBoard()
+                    .value[1]
+                    .notes
+                    .any { it.noted == true },
+            )
         }
     }
 }

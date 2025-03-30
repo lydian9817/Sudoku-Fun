@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.model.BoardSize
 import com.veragames.sudokufun.ui.presentation.components.Board
 import com.veragames.sudokufun.ui.presentation.components.BoardInfo
@@ -76,25 +75,35 @@ fun GameScreen(
             GameButtonRow(
                 onUndo = viewModel::undoMovement,
                 onHint = viewModel::showHint,
-                onNotes = {},
+                onNotes = {
+                    if (state.notesEnabled) {
+                        viewModel.enableNotes(false)
+                    } else {
+                        viewModel.enableNotes(true)
+                    }
+                },
                 onErase = viewModel::eraseCellValue,
                 onPause = viewModel::pauseGame,
                 hintEnabled = state.hintEnabled,
+                notesEnabled = state.notesEnabled,
             )
             LazyVerticalGrid(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
+                modifier = Modifier.fillMaxWidth().wrapContentHeight(),
                 horizontalArrangement = Arrangement.SpaceAround,
                 verticalArrangement = Arrangement.Center,
                 userScrollEnabled = false,
                 columns = GridCells.Fixed(BoardSize.NINE.size),
             ) {
-                items(SudokuValue.USER_VALUES[0]) { value ->
+                items(BoardSize.NINE.values) { value ->
                     CharacterValue(
                         value = value,
-                        onClick = { viewModel.setCellValue(value) },
+                        onClick = {
+                            if (state.notesEnabled) {
+                                viewModel.noteValue(value)
+                            } else {
+                                viewModel.setCellValue(value)
+                            }
+                        },
                     )
                 }
             }

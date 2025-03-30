@@ -33,4 +33,9 @@ interface GameRepository {
     suspend fun showHint(): Int
 
     suspend fun checkGameCompletion(): Boolean
+
+    suspend fun noteValue(
+        cell: Cell,
+        value: Char,
+    )
 }

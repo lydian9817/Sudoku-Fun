@@ -20,4 +20,9 @@ object TestTags {
     fun getCellTestTag(cellUI: CellUI) = "cell_${cellUI.cell.row}_${cellUI.cell.col}"
 
     fun getSudokuValueTestTag(value: SudokuValue) = "sudoku_value_${value.name}"
+
+    fun getCellNoteTestTag(
+        cellUI: CellUI,
+        value: SudokuValue,
+    ) = "cell_note_${value.value}_belonging_to_${getCellTestTag(cellUI)}"
 }

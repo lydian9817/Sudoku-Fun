@@ -3,6 +3,7 @@ package com.veragames.sudokufun.domain.repository
 import android.util.Log
 import com.veragames.sudokufun.data.BoardSupplier
 import com.veragames.sudokufun.data.model.Cell
+import com.veragames.sudokufun.data.model.Note
 import com.veragames.sudokufun.data.model.SudokuValue
 import com.veragames.sudokufun.domain.model.BoardSize
 import com.veragames.sudokufun.domain.util.Chronometer
@@ -30,7 +31,7 @@ class GameRepositoryImpl
             board.update {
                 gameBoardSupplier.getBoard(size.size).first().map {
                     if (it.value == SudokuValue.EMPTY.value) {
-                        it
+                        it.copy(notes = size.values.map { Note(it) })
                     } else {
                         it.copy(userCell = false)
                     }
@@ -61,6 +62,7 @@ class GameRepositoryImpl
                     }
                 }
             }
+            unnoteCellNotes(cell)
             if (result) {
                 Log.d(TAG, "Valor actualizado correctamente")
             } else {
@@ -83,6 +85,7 @@ class GameRepositoryImpl
                     }
                 }
             }
+            unnoteCellNotes(cell)
             if (result) {
                 Log.d(TAG, "Valor borrado correctamente")
             } else {
@@ -144,6 +147,34 @@ class GameRepositoryImpl
             return true
         }
 
+        override suspend fun noteValue(
+            cell: Cell,
+            value: Char,
+        ) {
+            if (cell.userCell && cell.completed.not()) {
+                board.update { currentBoard ->
+                    currentBoard.map { c ->
+                        if (c.isSame(cell)) {
+                            userMovements.add(c)
+                            c.copy(
+                                notes =
+                                    c.notes.map { note ->
+                                        if (note.value.value == value) {
+                                            note.copy(noted = note.noted.not())
+                                        } else {
+                                            note
+                                        }
+                                    },
+                                value = SudokuValue.EMPTY.value,
+                            )
+                        } else {
+                            c
+                        }
+                    }
+                }
+            }
+        }
+
         override suspend fun isRunning(): StateFlow<Boolean> = chronometer.isRunning()
 
         private fun checkConflicts(cell: Cell): Boolean {
@@ -157,11 +188,7 @@ class GameRepositoryImpl
 
         private suspend fun solveRandomCell() {
             val cell = board.value.filter { it.value == SudokuValue.EMPTY.value }.random()
-            val possibleValues =
-                when (boardSize) {
-                    BoardSize.NINE -> SudokuValue.NINE_VALUES.toMutableList()
-                    BoardSize.SIXTEEN -> SudokuValue.SIXTEEN_VALUES.toMutableList()
-                }
+            val possibleValues = boardSize.values.toMutableList()
             possibleValues.shuffle()
             run setValue@{
                 possibleValues.forEach {
@@ -169,6 +196,18 @@ class GameRepositoryImpl
                     if (checkConflicts(tmpCell).not()) {
                         setCellValue(tmpCell, it.value)
                         return@setValue
+                    }
+                }
+            }
+        }
+
+        private fun unnoteCellNotes(cell: Cell) {
+            board.update { currentBoard ->
+                currentBoard.map { c ->
+                    if (c.isSame(cell)) {
+                        c.copy(notes = c.notes.map { it.copy(noted = false) })
+                    } else {
+                        c
                     }
                 }
             }
