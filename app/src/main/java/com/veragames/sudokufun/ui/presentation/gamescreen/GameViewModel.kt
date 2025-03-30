@@ -118,6 +118,16 @@ class GameViewModel
             }
         }
 
+        fun selectValue(sudokuValue: SudokuValue?) {
+            viewModelScope.launch {
+                _state.update {
+                    it.copy(
+                        selectedValue = sudokuValue,
+                    )
+                }
+            }
+        }
+
         private fun updateStatus() {
             _state.update {
                 it.copy(

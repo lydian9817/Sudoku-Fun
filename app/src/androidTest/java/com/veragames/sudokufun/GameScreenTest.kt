@@ -5,8 +5,10 @@ import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
 import com.veragames.sudokufun.data.FakeBoardSupplier
 import com.veragames.sudokufun.data.mockedBoardSolved
 import com.veragames.sudokufun.data.model.Cell
@@ -196,6 +198,19 @@ class GameScreenTest {
             onNodeWithTag(TestTags.getCellTestTag(cell)).performClick()
             onNodeWithTag(TestTags.getSudokuValueTestTag(SudokuValue.FIVE)).performClick()
             onNodeWithTag(TestTags.getCellNoteTestTag(cell, SudokuValue.FIVE), true).assertExists()
+        }
+    }
+
+    @Test
+    fun set_value_when_value_is_selected_and_cell_clicked() {
+        composeTestRule.apply {
+            onNodeWithTag(TestTags.getSudokuValueTestTag(SudokuValue.FIVE)).performTouchInput {
+                longClick()
+            }
+            onNodeWithTag(getCellUiTag(0, 7)).performClick()
+            onNodeWithTag(getCellUiTag(0, 7)).assertTextContains("5")
+            onNodeWithTag(getCellUiTag(4, 1)).performClick()
+            onNodeWithTag(getCellUiTag(4, 1)).assertTextContains("5")
         }
     }
 
