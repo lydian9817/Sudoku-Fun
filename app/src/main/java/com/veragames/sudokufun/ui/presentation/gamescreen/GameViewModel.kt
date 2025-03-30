@@ -24,7 +24,6 @@ class GameViewModel
         private val gameUseCases: GameUseCases,
     ) : ViewModel() {
         private val formatter = SimpleDateFormat("mm:ss", Locale.getDefault())
-        private lateinit var selectedCell: CellUI
         private val initiated = MutableStateFlow(false)
         private val _state = MutableStateFlow(GameState())
         val state: StateFlow<GameState> = _state.asStateFlow()
@@ -43,7 +42,6 @@ class GameViewModel
                             it.board.map { cUI ->
                                 when {
                                     cellUI.cell.isSame(cUI.cell) -> {
-                                        selectedCell = cUI
                                         cUI.copy(status = CellStatus.SELECTED)
                                     }
 
@@ -59,7 +57,7 @@ class GameViewModel
 
         fun setCellValue(value: SudokuValue) {
             viewModelScope.launch {
-                gameUseCases.setCellValue(selectedCell.cell, value)
+                gameUseCases.setCellValue(selectedCell().cell, value)
                 if (gameUseCases.checkGameCompletion()) {
                     gameUseCases.stopChronometer()
                     _state.update { it.copy(completed = true) }
@@ -69,7 +67,7 @@ class GameViewModel
 
         fun eraseCellValue() {
             viewModelScope.launch {
-                gameUseCases.eraseCellValue(selectedCell.cell)
+                gameUseCases.eraseCellValue(selectedCell().cell)
             }
         }
 
@@ -116,7 +114,7 @@ class GameViewModel
 
         fun noteValue(sudokuValue: SudokuValue) {
             viewModelScope.launch {
-                gameUseCases.noteValue(selectedCell.cell, sudokuValue)
+                gameUseCases.noteValue(selectedCell().cell, sudokuValue)
             }
         }
 
@@ -129,10 +127,11 @@ class GameViewModel
                                 status =
                                     when {
                                         cUI.status == CellStatus.SELECTED -> CellStatus.SELECTED
-                                        selectedCell.cell.conflicts(cUI.cell) -> CellStatus.CONFLICT
+                                        selectedCell().cell.conflicts(cUI.cell) -> CellStatus.CONFLICT
 
-                                        selectedCell.cell.implicates(cUI.cell) -> CellStatus.IMPLICATED
-                                        selectedCell.cell.value == cUI.cell.value && selectedCell.cell.value != SudokuValue.EMPTY.value -> {
+                                        selectedCell().cell.implicates(cUI.cell) -> CellStatus.IMPLICATED
+                                        selectedCell().cell.value == cUI.cell.value &&
+                                            selectedCell().cell.value != SudokuValue.EMPTY.value -> {
                                             CellStatus.COMMON_NUMBER
                                         }
 
@@ -164,9 +163,6 @@ class GameViewModel
                             it.copy(
                                 board =
                                     it.board.mapIndexed { index, cUI ->
-                                        if (board[index].isSame(selectedCell.cell)) {
-                                            selectedCell = selectedCell.copy(cell = board[index])
-                                        }
                                         cUI.copy(cell = board[index])
                                     },
                             )
@@ -201,4 +197,6 @@ class GameViewModel
                 }
             }
         }
+
+        private fun selectedCell(): CellUI = _state.value.board.find { it.status == CellStatus.SELECTED }!!
     }
